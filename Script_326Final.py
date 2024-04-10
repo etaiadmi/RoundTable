@@ -21,14 +21,12 @@ class GameState:
             -------------------Welcome to RoundTable Cards------------------\n 
             You will build a hand of 7 cards, choosing to keep 2 of 3 cards 
             initially dealt, then choosing 5 of the 6 cards in the river. \n
-            Your hand of  cards will be assigned a value. Build sets (run, 2 of 
+            Your hand of cards will be assigned a value. Build sets (run, 2 of 
             a kind, 3 of a kind, full house, flush) within your hand, and you 
             will be awarded points equal to the face value of the cards in the 
-            set times the length of the set. Flushes will be considered for 5+ 
-            cards. 
-            All other sets can be 2+ cards. Any cards not in a set will have 
-            their 
-            face values added to the total points. \n
+            set times the length of the set. Any cards not in a set will be 
+            worth face value, and points from sets and cards will be added to
+            get teh value for a hand. \n
             You will play against a computuer bot. There are different levels of 
             difficultues for bots: 1 being easiest and 5 being hardest
             ====================================================================
