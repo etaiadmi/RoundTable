@@ -2,6 +2,9 @@
 
 #Dan
 class GameState:
+    def __init__(self):
+        pass
+
     def begin_game(self):
         """
         To initilize game explaining rules and determining user inputted 
@@ -14,7 +17,8 @@ class GameState:
             prints messages explaining game to sd out
         Returns: none
         """
-        print("""Welcome to RoundTable Cards.\n 
+        print("""\n\n\n
+            -------------------Welcome to RoundTable Cards------------------\n 
             You will build a hand of 7 cards, choosing to keep 2 of 3 cards 
             initially dealt, then choosing 5 of the 6 cards in the river. \n
             Your hand of  cards will be assigned a value. Build sets (run, 2 of 
@@ -27,12 +31,15 @@ class GameState:
             face values added to the total points. \n
             You will play against a computuer bot. There are different levels of 
             difficultues for bots: 1 being easiest and 5 being hardest
+            ====================================================================
             """)
         self.level=int(input("What level bot would you like to play against: "))
-        print (""" You also will bet at the end of each round (after cards are
-            dealt then after each card in the river is revealed). How much money
-            do you wish to bring to the table (bot will match you)""")
+        print ("""You also will bet at the end of each round (after cards are
+        dealt then after each card in the river is revealed). How much money
+        do you wish to bring to the table (bot will match you)""")
         self.money=int(input("Dollar amount: "))
         print(f"""Game is initializing against level {self.level} bot with a bet
-            of {self.money}, best of luck!""")
+        of ${self.money}, best of luck!""")
         
+x=GameState()
+x.begin_game()
