@@ -39,15 +39,46 @@ class GameState:
         print(f"""Game is initializing against level {self.level} bot with a bet
         of ${self.money}, best of luck!""")
 
-class Player: 
-    def __init__(self, bet):
-        self.cards=[1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,6,6,6,6,7,7,7,7,
+class Player:
+    def __init__(self, money):
+        self.deck = [1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,6,6,6,6,7,7,7,7,
                     8,8,8,8,9,9,9,9,10,10,10,10,11,11,11,11,12,12,12,12,
                     13,13,13,13]
-        self.money = bet
-        self.pot=0
-    
-    def Ranking(self, hand):
+        self.money = money
+        self.initial_cards = []
+        self.final_hand = []
+
+    def choose_initial_cards(self):
+        """
+        Prompts the player to choose two cards to keep from their initially dealt three cards.
+
+        This method displays the three initially dealt cards to the player and requests input to
+        select two of these cards to keep for their hand. The chosen cards are moved from the
+        `initial_cards` list to the `final_hand` list. This process continues until the player has
+        successfully chosen two cards. If the player attempts to choose a card not among their
+        initial cards, they are prompted to make a valid selection.
+
+        Side Effects:
+            - Modifies the `initial_cards` list by removing the chosen cards.
+            - Modifies the `final_hand` list by adding the chosen cards.
+            - Prints messages to stdout to show the cards available for selection, prompt the
+              player for their choice, and confirm the chosen cards.
+
+        Returns:
+            None
+        """
+        print("Your initial cards are:", self.initial_cards)
+        while len(self.final_hand) < 2:
+            choice = int(input("Choose a card to keep (enter the card number): "))
+            if choice in self.initial_cards:
+                self.final_hand.append(choice)
+                self.initial_cards.remove(choice)
+                print("You have chosen:", self.final_hand)
+            else:
+                print("Invalid choice, please select from your initial cards.")
+        print("Your final hand after choosing initial cards:", self.final_hand)
+        
+    def Ranking(hand):
         """
         Assigns value to hand
         Args: 
@@ -72,7 +103,7 @@ class Player:
             else:
                 pass
         #run 
-        set=sorted(hand, reverse=False)
+        set=set(hand)
         for n in set:
             if (n+1) in set:
                 if (n+2) in set:
