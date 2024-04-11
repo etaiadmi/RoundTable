@@ -47,7 +47,7 @@ class Player:
         self.money = bet
         self.pot=0
     
-    def Ranking(hand):
+    def Ranking(self, hand):
         """
         Assigns value to hand
         Args: 
@@ -72,7 +72,7 @@ class Player:
             else:
                 pass
         #run 
-        set=set(hand)
+        set=sorted(hand, reverse=False)
         for n in set:
             if (n+1) in set:
                 if (n+2) in set:
@@ -129,7 +129,3 @@ class Player:
             else: 
                 pass
         return value
-
-
-        
-
