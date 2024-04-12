@@ -1,9 +1,19 @@
 #Code for 4/12 checkin 
 
 #Dan
+
+from random import randint
+
 class GameState:
     def __init__(self):
-        pass
+        """Initializes a GameState object.
+        
+        Side effects:
+            Initializes attribute deck.
+        """
+        self.deck = [1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,6,6,6,6,7,7,7,7,
+            8,8,8,8,9,9,9,9,10,10,10,10,11,11,11,11,12,12,12,12,
+            13,13,13,13]
 
     def begin_game(self):
         """
@@ -38,12 +48,23 @@ class GameState:
         self.money=int(input("Dollar amount: "))
         print(f"""Game is initializing against level {self.level} bot with a bet
         of ${self.money}, best of luck!""")
+        
+    def shuffle(self):
+        """Shuffles the deck.
+        
+        Side effects:
+            Puts the deck in a random order.
+        """
+        pre_shuffle = [list() for c in self.deck]
+        for n in range(len(self.deck)):
+            pre_shuffle[n].append(self.deck[n])
+        for c in pre_shuffle:
+            c.append(randint(0, 1000))
+        post_shuffle = sorted(pre_shuffle, key=lambda x: x[1])
+        self.deck = [c[0] for c in post_shuffle]
 
 class Player:
     def __init__(self, money):
-        self.deck = [1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,6,6,6,6,7,7,7,7,
-                    8,8,8,8,9,9,9,9,10,10,10,10,11,11,11,11,12,12,12,12,
-                    13,13,13,13]
         self.money = money
         self.initial_cards = []
         self.final_hand = []
