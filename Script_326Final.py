@@ -62,6 +62,36 @@ class GameState:
             c.append(randint(0, 1000))
         post_shuffle = sorted(pre_shuffle, key=lambda x: x[1])
         self.deck = [c[0] for c in post_shuffle]
+        
+    def point_comparison(player_points, computer_points):
+        """Comapres the point values of the player and computer and determines who
+        won.
+        
+        Args:
+            player_points (int): The points of the player's hand.
+            computer_points (int): The points of the computer's hand.
+        
+        Returns:
+            tuple: 
+                A string message which describes the outcome 
+                of the game, which can either be a win, loss, or tie.
+            
+                A string containing a single character which represents one of the
+                three outcomes for the game('W', 'L', 'T') 
+        """
+        outcome = ""
+        if player_points > computer_points:
+            outcome = "W"
+            return f"Congrats! You won with {player_points} points!", outcome
+        elif player_points < computer_points:
+            outcome = "L"
+            return ("You lost. Your opponent had "
+                f"{computer_points - player_points} "
+                f"more than you."), outcome
+        else:
+            outcome = "T"
+            return (f"It's a draw! The pot will be split evenly. Each player has "
+                f"{player_points} points"), outcome
 
 class Player:
     def __init__(self, money):
