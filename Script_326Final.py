@@ -103,7 +103,7 @@ class Player:
             else:
                 pass
         #run 
-        set=set(hand)
+        set=sorted(hand, reverse=False)
         for n in set:
             if (n+1) in set:
                 if (n+2) in set:
