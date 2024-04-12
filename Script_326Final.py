@@ -113,7 +113,7 @@ class Player:
                                 if (n+6) in set: 
                                     run = ((n) + (n+1) + (n+2) + (n+3) + (n+4)+
                                     (n+5) + (n+6))
-                                    pts=run * 7
+                                    pts=run * 6
                                     value += pts
                                     set.remove(n)
                                     set.remove(n+1)
@@ -124,7 +124,7 @@ class Player:
                                 else: 
                                     run = ((n) + (n+1) + (n+2) + (n+3) + (n+4)+
                                     (n+5) )
-                                    pts=run * 6
+                                    pts=run * 5
                                     value += pts
                                     set.remove(n)
                                     set.remove(n+1)
@@ -133,7 +133,7 @@ class Player:
                                     set.remove(n+4)
                             else: 
                                 run = ((n) + (n+1) + (n+2) + (n+3) + (n+4))
-                                pts=run * 5
+                                pts=run * 4
                                 value += pts
                                 set.remove(n)
                                 set.remove(n+1)
@@ -142,7 +142,7 @@ class Player:
                                 set.remove(n+4)
                         else:
                             run = ((n) + (n+1) + (n+2) + (n+3))
-                            pts=run * 4
+                            pts=run * 3
                             value += pts
                             set.remove(n)
                             set.remove(n+1)
@@ -150,7 +150,7 @@ class Player:
                             set.remove(n+3)
                     else:
                         run = ((n) + (n+1) + (n+2))
-                        pts = run*3
+                        pts = run*2
                         value += pts
                         set.remove(n)
                         set.remove(n+1)
