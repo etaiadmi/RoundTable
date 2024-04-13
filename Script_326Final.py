@@ -93,9 +93,32 @@ class GameState:
             return (f"It's a draw! The pot will be split evenly. Each player has "
                 f"{player_points} points"), outcome
 
+    def distribute_pot(self,outcome):
+        """ Distributes the pot to the winner
+        Args:
+            outcome(str): The outcome result string from the 
+            point_comprehenstion method
+        Side effects:
+            The money of the player may increase if they win
+        Returns:
+            self.money(int): The money of the player after the distribution 
+            of the pot. 
+        """
+        final_result = outcome[1]  
+        if final_result == 'W':
+            print(f"You won ${self.total_pot}!")
+            self.money += self.total_pot  
+        elif final_result == 'L':
+            print("You lost!")
+        elif final_result == 'T':
+            print(f"It's a chop! You won ${self.total_pot/2}!")
+            self.money += self.total_pot / 2  
+        return self.money
+    
 class Player:
     def __init__(self, money):
         self.money = money
+        self.total_pot = 0
         self.initial_cards = []
         self.final_hand = []
 
@@ -211,3 +234,27 @@ class Player:
             else: 
                 pass
         return value
+    
+    def player_bet(self):
+        """ 
+        Player option to bet with their money 
+        Args: None
+        Side effects:
+            - Increases the total_pot amount.
+            - Prints a message to the console of how much they bet or if they 
+            cannot bet the amount due to the bet being to high or a negative 
+            number
+        Returns:
+            total_pot(int) - updates the total amount of money in the pot 
+        """
+        bet = int(input("Bet amount:"))
+        if 0 < bet <= self.money:
+            self.money -= bet
+            self.total_pot += bet  
+            print(f"Player has bet ${bet}")
+            return self.total_pot # Return updated total_pot
+        elif bet < 0:
+            print("You must bet a positive whole number")#add redo try later
+        else:
+            print("You don't have enough money to bet that amount") 
+            # add redo try later
