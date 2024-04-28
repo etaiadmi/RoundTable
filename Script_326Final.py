@@ -15,6 +15,7 @@ class GameState:
             8,8,8,8,9,9,9,9,10,10,10,10,11,11,11,11,12,12,12,12,
             13,13,13,13]
         self.players = []
+        self.river = []
 
     def begin_game(self):
         """
@@ -75,6 +76,24 @@ class GameState:
             player.initial_cards.append(self.deck.pop())
             player.initial_cards.append(self.deck.pop())
             player.initial_cards.append(self.deck.pop())
+            
+    def flip(self):
+        """Flips one card from the deck to the river
+        
+        Side effects:
+            Takes a card from the deck and adds it to the river.
+        """
+        self.river.append(self.deck.pop())
+        
+    def flop(self):
+        """Flips threes cards from the deck to the river.
+        
+        Side effects:
+            Takes 3 cards from deck and adds it to the river.
+        """
+        self.river.append(self.deck.pop())
+        self.river.append(self.deck.pop())
+        self.river.append(self.deck.pop())
         
     def point_comparison(player_points, computer_points):
         """Comapres the point values of the player and computer and determines who
@@ -271,3 +290,8 @@ class Player:
         else:
             print("You don't have enough money to bet that amount") 
             # add redo try later
+            
+def game():
+    """Plays 1 round of RoundTable Cards
+    """
+    
