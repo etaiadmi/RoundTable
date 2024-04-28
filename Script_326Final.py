@@ -14,6 +14,7 @@ class GameState:
         self.deck = [1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,6,6,6,6,7,7,7,7,
             8,8,8,8,9,9,9,9,10,10,10,10,11,11,11,11,12,12,12,12,
             13,13,13,13]
+        self.players = []
 
     def begin_game(self):
         """
@@ -62,6 +63,18 @@ class GameState:
             c.append(randint(0, 1000))
         post_shuffle = sorted(pre_shuffle, key=lambda x: x[1])
         self.deck = [c[0] for c in post_shuffle]
+        
+    def deal(self):
+        """Deals first three cards.
+        
+        Side effects:
+            Distributes three cards each to HumanPlayer and ComputerPlayer 
+            instances
+        """
+        for player in self.players:
+            player.initial_cards.append(self.deck.pop())
+            player.initial_cards.append(self.deck.pop())
+            player.initial_cards.append(self.deck.pop())
         
     def point_comparison(player_points, computer_points):
         """Comapres the point values of the player and computer and determines who
