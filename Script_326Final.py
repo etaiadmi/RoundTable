@@ -292,6 +292,18 @@ class Player:
             # add redo try later
             
 def game():
-    """Plays 1 round of RoundTable Cards
+    """Plays 1 round of RoundTable Cards.
     """
-    
+    gamestate = GameState
+    gamestate.begin_game()
+    gamestate.shuffle()
+    gamestate.deal()
+    human.choose_initial_cards()
+    computer.choose_initial_cards()
+
+
+def main():
+    """Runs as many RoundTable Cards games as wanted.
+    """
+    human = HumanPlayer
+    computer = ComputerPlayer
