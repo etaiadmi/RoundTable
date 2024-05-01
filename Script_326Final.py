@@ -14,7 +14,7 @@ class GameState:
         self.deck = [1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,6,6,6,6,7,7,7,7,
             8,8,8,8,9,9,9,9,10,10,10,10,11,11,11,11,12,12,12,12,
             13,13,13,13]
-        self.players = [human, computer]
+        self.players = []
         self.river = []
 
     def begin_game(self):
@@ -38,7 +38,7 @@ class GameState:
             will be awarded points equal to the face value of the cards in the 
             set times the length of the set. Any cards not in a set will be 
             worth face value, and points from sets and cards will be added to
-            get teh value for a hand. \n
+            get the value for a hand. \n
             You will play against a computuer bot. There are different levels of 
             difficultues for bots: 1 being easiest and 5 being hardest
             ====================================================================
@@ -296,7 +296,6 @@ def game():
     """Plays 1 round of RoundTable Cards.
     """
     
-    gamestate.begin_game()
     gamestate.shuffle()
     gamestate.deal()
     human.choose_initial_cards()
@@ -308,8 +307,37 @@ def game():
 def main():
     """Runs as many RoundTable Cards games as wanted.
     """
-    gamestate = GameState
-    human = HumanPlayer
-    computer = ComputerPlayer
+    gamestate = GameState()
+    gamestate.begin_game()
+    human = HumanPlayer(gamestate)
+    gamestate.players.append(human)
+    computer = ComputerPlayer(gamestate)
+    gamestate.players.append(computer)
     while 1 != 0:
-        break
+        game()
+        while 1 != 0:
+            another = input(
+                "Would you like to play another game? (Y/N)").capitalize
+            if another == "Y" or "N":
+                break
+        if another == "Y":
+            while 1 != 0:
+                level=int(input(
+                    "What level bot would you like to play against: "))
+                if level == "":
+                    gamestate.level = level
+                    break
+            while 1 != 0:
+                more_money=input(
+                    "Would you like to add more more money to your chips? (Y/N)")
+                if more_money == "Y":
+                    while 1 != 0:
+                        money=int(input(
+                            "How much would you like to add to your chips in dollars?"))
+                        if money >= 0:
+                            gamestate.money = money
+                            break
+                if more_money == "N":
+                    break
+        if another == "N":
+            break
