@@ -291,7 +291,9 @@ class Player:
         else:
             print("You don't have enough money to bet that amount") 
             # add redo try later
-            
+
+class HumanPlayer (Player):
+
 def game():
     """Plays 1 round of RoundTable Cards.
     """
