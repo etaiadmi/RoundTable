@@ -262,7 +262,7 @@ class Player:
                 pass
         return value
 
-class HumanPlayer (Player):
+class HumanPlayer(Player):
     def choose_initial_cards(self): #this is HumanPlayer
         """
         Prompts the player to choose two cards to keep from their initially dealt three cards.
@@ -380,13 +380,15 @@ class ComputerPlayerEasy(Player):
 def game():
     """Plays 1 round of RoundTable Cards.
     """
-    
     gamestate.shuffle()
     gamestate.deal()
     human.choose_initial_cards()
     computer.cpu_choose_initial_cards()
     human.player_bet()
     computer.cpu_bet()
+    gamestate.flop()
+    
+    
     
 
 def main():
@@ -396,7 +398,10 @@ def main():
     gamestate.begin_game()
     human = HumanPlayer(gamestate)
     gamestate.players.append(human)
-    computer = ComputerPlayer(gamestate)
+    if gamestate.level == "":
+        computer = ComputerPlayerEasy(gamestate)
+    if gamestate.level == "":
+        computer = ComputerPlayerHard(gamestate)
     gamestate.players.append(computer)
     while 1 != 0:
         game()
@@ -411,7 +416,11 @@ def main():
                     "What level bot would you like to play against: "))
                 if level == "":
                     gamestate.level = level
-                    break
+                    if gamestate.level == "":
+                        computer = ComputerPlayerEasy(gamestate)
+                    if gamestate.level == "":
+                        computer = ComputerPlayerHard(gamestate)
+                        break
             while 1 != 0:
                 more_money=input(
                     "Would you like to add more more money to your chips? (Y/N)")
