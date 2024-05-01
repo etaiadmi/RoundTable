@@ -14,7 +14,7 @@ class GameState:
         self.deck = [1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,6,6,6,6,7,7,7,7,
             8,8,8,8,9,9,9,9,10,10,10,10,11,11,11,11,12,12,12,12,
             13,13,13,13]
-        self.players = []
+        self.players = [human, computer]
         self.river = []
 
     def begin_game(self):
@@ -95,7 +95,7 @@ class GameState:
         self.river.append(self.deck.pop())
         self.river.append(self.deck.pop())
         
-    def point_comparison(player_points, computer_points):
+    def point_comparison(self, player_points, computer_points):
         """Comapres the point values of the player and computer and determines who
         won.
         
@@ -184,7 +184,7 @@ class Player:
                 print("Invalid choice, please select from your initial cards.")
         print("Your final hand after choosing initial cards:", self.final_hand)
         
-    def Ranking(hand):
+    def Ranking(self, hand):
         """
         Assigns value to hand
         Args: 
@@ -294,16 +294,21 @@ class Player:
 def game():
     """Plays 1 round of RoundTable Cards.
     """
-    gamestate = GameState
+    
     gamestate.begin_game()
     gamestate.shuffle()
     gamestate.deal()
     human.choose_initial_cards()
-    computer.choose_initial_cards()
+    computer.choose_inital_cards()
+    human.player_bet()
+    
 
 
 def main():
     """Runs as many RoundTable Cards games as wanted.
     """
+    gamestate = GameState
     human = HumanPlayer
     computer = ComputerPlayer
+    while 1 != 0:
+        break
