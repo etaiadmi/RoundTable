@@ -148,13 +148,14 @@ class GameState:
         return self.money
     
 class Player:
-    def __init__(self, money):
-        self.money = money
+    def __init__(self, gamestate_obj):
+        self.money=gamestate_obj.money
+        self.cards=gamestate_obj.shuffle()
         self.total_pot = 0
         self.initial_cards = []
         self.final_hand = []
 
-    def choose_initial_cards(self):
+    def choose_initial_cards(self): #this is HumanPlayer
         """
         Prompts the player to choose two cards to keep from their initially dealt three cards.
 
@@ -209,7 +210,7 @@ class Player:
             else:
                 pass
         #run 
-        set=sorted(hand, reverse=False)
+        set=sorted(hand, key=lambda x: x+1, reverse=False)
         for n in set:
             if (n+1) in set:
                 if (n+2) in set:
