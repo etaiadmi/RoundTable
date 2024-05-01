@@ -16,6 +16,30 @@ class GameState:
             13,13,13,13]
         self.players = [human, computer]
         self.river = []
+    
+    def __eq__(self, other):
+        """
+        Check if this GameState is equal to another GameState.
+
+        Determines equality based on whether the deck, players, and river attributes 
+        are the same in both instances. This method is useful for comparing the state 
+        of the game at different points in time or for unit testing to ensure the game 
+        state updates as expected.
+
+        Args:
+            other (GameState): The other GameState object to compare against.
+
+        Returns:
+            bool: True if both GameState instances are equal, False otherwise.
+
+        Raises:
+            NotImplemented: If 'other' is not an instance of GameState.
+        """
+        
+        if not isinstance(other, GameState):
+            return NotImplemented
+        return self.deck == other.deck and self.players == other.players and self.river == other.river
+
 
     def begin_game(self):
         """
@@ -154,36 +178,6 @@ class Player:
         self.total_pot = 0
         self.initial_cards = []
         self.final_hand = []
-
-    def choose_initial_cards(self): #this is HumanPlayer
-        """
-        Prompts the player to choose two cards to keep from their initially dealt three cards.
-
-        This method displays the three initially dealt cards to the player and requests input to
-        select two of these cards to keep for their hand. The chosen cards are moved from the
-        `initial_cards` list to the `final_hand` list. This process continues until the player has
-        successfully chosen two cards. If the player attempts to choose a card not among their
-        initial cards, they are prompted to make a valid selection.
-
-        Side Effects:
-            - Modifies the `initial_cards` list by removing the chosen cards.
-            - Modifies the `final_hand` list by adding the chosen cards.
-            - Prints messages to stdout to show the cards available for selection, prompt the
-              player for their choice, and confirm the chosen cards.
-
-        Returns:
-            None
-        """
-        print("Your initial cards are:", self.initial_cards)
-        while len(self.final_hand) < 2:
-            choice = int(input("Choose a card to keep (enter the card number): "))
-            if choice in self.initial_cards:
-                self.final_hand.append(choice)
-                self.initial_cards.remove(choice)
-                print("You have chosen:", self.final_hand)
-            else:
-                print("Invalid choice, please select from your initial cards.")
-        print("Your final hand after choosing initial cards:", self.final_hand)
         
     def Ranking(self, hand):
         """
@@ -305,6 +299,35 @@ def game():
     computer.choose_inital_cards()
     human.player_bet()
     
+def choose_initial_cards(self): #this is HumanPlayer
+    """
+    Prompts the player to choose two cards to keep from their initially dealt three cards.
+
+    This method displays the three initially dealt cards to the player and requests input to
+    select two of these cards to keep for their hand. The chosen cards are moved from the
+    `initial_cards` list to the `final_hand` list. This process continues until the player has
+    successfully chosen two cards. If the player attempts to choose a card not among their
+    initial cards, they are prompted to make a valid selection.
+
+    Side Effects:
+        - Modifies the `initial_cards` list by removing the chosen cards.
+        - Modifies the `final_hand` list by adding the chosen cards.
+        - Prints messages to stdout to show the cards available for selection, prompt the
+            player for their choice, and confirm the chosen cards.
+
+    Returns:
+        None
+    """
+    print("Your initial cards are:", self.initial_cards)
+    while len(self.final_hand) < 2:
+        choice = int(input("Choose a card to keep (enter the card number): "))
+        (self.final_hand.append(choice) and self.initial_cards.remove(choice)
+            if choice in self.initial_cards
+            else print("Invalid choice, please select from your initial cards.")
+    ) if choice in self.initial_cards else None
+
+    print("Your final hand after choosing initial cards:", self.final_hand)
+
 
 
 def main():
