@@ -16,6 +16,30 @@ class GameState:
             13,13,13,13]
         self.players = []
         self.river = []
+    
+    def __eq__(self, other):
+        """
+        Check if this GameState is equal to another GameState.
+
+        Determines equality based on whether the deck, players, and river attributes 
+        are the same in both instances. This method is useful for comparing the state 
+        of the game at different points in time or for unit testing to ensure the game 
+        state updates as expected.
+
+        Args:
+            other (GameState): The other GameState object to compare against.
+
+        Returns:
+            bool: True if both GameState instances are equal, False otherwise.
+
+        Raises:
+            NotImplemented: If 'other' is not an instance of GameState.
+        """
+        
+        if not isinstance(other, GameState):
+            return NotImplemented
+        return self.deck == other.deck and self.players == other.players and self.river == other.river
+
 
     def begin_game(self):
         """
@@ -154,36 +178,6 @@ class Player:
         self.total_pot = 0
         self.initial_cards = []
         self.final_hand = []
-
-    def choose_initial_cards(self): #this is HumanPlayer
-        """
-        Prompts the player to choose two cards to keep from their initially dealt three cards.
-
-        This method displays the three initially dealt cards to the player and requests input to
-        select two of these cards to keep for their hand. The chosen cards are moved from the
-        `initial_cards` list to the `final_hand` list. This process continues until the player has
-        successfully chosen two cards. If the player attempts to choose a card not among their
-        initial cards, they are prompted to make a valid selection.
-
-        Side Effects:
-            - Modifies the `initial_cards` list by removing the chosen cards.
-            - Modifies the `final_hand` list by adding the chosen cards.
-            - Prints messages to stdout to show the cards available for selection, prompt the
-              player for their choice, and confirm the chosen cards.
-
-        Returns:
-            None
-        """
-        print("Your initial cards are:", self.initial_cards)
-        while len(self.final_hand) < 2:
-            choice = int(input("Choose a card to keep (enter the card number): "))
-            if choice in self.initial_cards:
-                self.final_hand.append(choice)
-                self.initial_cards.remove(choice)
-                print("You have chosen:", self.final_hand)
-            else:
-                print("Invalid choice, please select from your initial cards.")
-        print("Your final hand after choosing initial cards:", self.final_hand)
         
     def Ranking(self, hand):
         """
@@ -267,7 +261,38 @@ class Player:
             else: 
                 pass
         return value
-    
+
+class HumanPlayer (Player):
+    def choose_initial_cards(self): #this is HumanPlayer
+        """
+        Prompts the player to choose two cards to keep from their initially dealt three cards.
+
+        This method displays the three initially dealt cards to the player and requests input to
+        select two of these cards to keep for their hand. The chosen cards are moved from the
+        `initial_cards` list to the `final_hand` list. This process continues until the player has
+        successfully chosen two cards. If the player attempts to choose a card not among their
+        initial cards, they are prompted to make a valid selection.
+
+        Side Effects:
+            - Modifies the `initial_cards` list by removing the chosen cards.
+            - Modifies the `final_hand` list by adding the chosen cards.
+            - Prints messages to stdout to show the cards available for selection, prompt the
+              player for their choice, and confirm the chosen cards.
+
+        Returns:
+            None
+        """
+        print("Your initial cards are:", self.initial_cards)
+        while len(self.final_hand) < 2:
+            choice = int(input("Choose a card to keep (enter the card number): "))
+            if choice in self.initial_cards:
+                self.final_hand.append(choice)
+                self.initial_cards.remove(choice)
+                print("You have chosen:", self.final_hand)
+            else:
+                print("Invalid choice, please select from your initial cards.")
+        print("Your final hand after choosing initial cards:", self.final_hand)
+        
     def player_bet(self):
         """ 
         Player option to bet with their money 
@@ -280,18 +305,78 @@ class Player:
         Returns:
             total_pot(int) - updates the total amount of money in the pot 
         """
-        bet = int(input("Bet amount:"))
-        if 0 < bet <= self.money:
+
+        while True:
+            try:
+                bet = int(input("Bet amount: "))
+                if 0 < bet <= self.money:
+                    self.money -= bet
+                    self.total_pot += bet
+                    print(f"Player has bet ${bet}")
+                    return self.total_pot
+                elif bet <= 0:
+                    print("You must bet a positive whole number.")
+                else:
+                    print("You don't have enough money to bet that amount.")
+            except ValueError:
+                print("Invalid input. Please enter a positive whole number.")
+
+    def fold(self):
+        """if human player folds, they concede action and take an L
+            Side effects: - HumanPlayer loses money
+                          - ComputerPlayer gains money
+            Returns: distribute_pot function is called which will give out 
+            pot winnings. 
+        """
+        outcome = "L"
+        return GameState.distribute_pot(outcome)
+        
+class ComputerPlayerEasy(Player):
+    """Prompts computer player to choose the two highest cards
+
+        Side effects: 
+                - Changes the hand of the computer player 
+                - Modifies the `initial_cards` list by removing the chosen cards.
+                - Modifies the `final_hand` list by adding the chosen cards.
+    """
+    def cpu_choose_initial_cards(self):
+        while len(self.final_hand) <2:
+            choice = max(self.initial.cards)
+            if choice in self.initial.cards:
+                self.final_hand.append(choice)
+                self.initial_cards.remove(choice)
+            else:
+                print("CPU_initial card error")
+
+    def cpu_bet(self):
+        """ cpu makes a percentage bet based on the money it has
+        Args: None
+            Side effects:
+                - Increases the total_pot amount.
+                - Changes the amount of money of the computer player
+                - If folds then it will call the distribute_pot and give out 
+                earnings
+            Returns:
+                total_pot(int) - updates the total amount of money in the pot 
+
+        """
+        if self.money > 0 and self.total_pot <400:
+            bet = self.money/10
+
             self.money -= bet
-            self.total_pot += bet  
-            print(f"Player has bet ${bet}")
+            self.total_pot = bet
+            print(f"CPU has bet ${bet}")
             return self.total_pot # Return updated total_pot
-        elif bet < 0:
-            print("You must bet a positive whole number")#add redo try later
+        elif self.money == 0: 
+            print("CPU is broke") #when cpu is broke do we rebuy in? 
+            return print("VICTORY") #need to recognize certain victory 
+
         else:
-            print("You don't have enough money to bet that amount") 
-            # add redo try later
+            outcome = 'W'
+            return GameState.distribute_pot(outcome) #should trigger method 
+                                                     #outcome W for human player
             
+        
 def game():
     """Plays 1 round of RoundTable Cards.
     """
@@ -299,10 +384,10 @@ def game():
     gamestate.shuffle()
     gamestate.deal()
     human.choose_initial_cards()
-    computer.choose_inital_cards()
+    computer.cpu_choose_initial_cards()
     human.player_bet()
+    computer.cpu_bet()
     
-
 
 def main():
     """Runs as many RoundTable Cards games as wanted.
