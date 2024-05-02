@@ -96,10 +96,9 @@ class GameState:
             Distributes three cards each to HumanPlayer and ComputerPlayer 
             instances
         """
-        for player in self.players:
-            player.initial_cards.append(self.deck.pop())
-            player.initial_cards.append(self.deck.pop())
-            player.initial_cards.append(self.deck.pop())
+        for n in range(3):
+            for player in self.players:
+                player.initial_cards.append(self.deck.pop())      
             
     def flip(self):
         """Flips one card from the deck to the river
@@ -390,13 +389,37 @@ def game(gamestate, human, computer):
     gamestate.deal()
     human.choose_initial_cards()
     computer.cpu_choose_initial_cards()
-    human.fold()
-    human.player_bet()
-    computer.cpu_bet()
-    gamestate.flop()
+    gamestate.turn()
+    if play_on == False:
+        gamestate.distrubute_pot("L")
+    else:
+        gamestate.flop()
+        gamestate.turn()
+        if play_on == False:
+            gamestate.distrubute_pot("L")
+        else:
+            gamestate.flip()
+            gamestate.turn()
+            if play_on == False:
+                gamestate.distrubute_pot("L")
+            else:
+                gamestate.flip()
+                gamestate.turn()
+                if play_on == False:
+                    gamestate.distrubute_pot("L")
+                else:
+                    gamestate.flip()
+                    gamestate.turn()
+                    human_rank = human.rank()
+                    computer_rank = computer.rank()
+                    gamestate.point_comparison(human_rank, computer_rank)
+                    gamestate.distrbute_pot(outcome)
+                    
+                    
+                    
     
     
-    
+    return 
 
 def main():
     """Runs as many RoundTable Cards games as wanted.
