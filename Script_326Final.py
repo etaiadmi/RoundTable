@@ -335,7 +335,7 @@ class HumanPlayer(Player):
                 break
         if want_fold == "Y":
             outcome = "L"
-            return GameState.distribute_pot(outcome)
+            return outcome
         
 class ComputerPlayerEasy(Player):
     """Prompts computer player to choose the two highest cards
@@ -390,6 +390,7 @@ def game(gamestate, human, computer):
     gamestate.deal()
     human.choose_initial_cards()
     computer.cpu_choose_initial_cards()
+    human.fold()
     human.player_bet()
     computer.cpu_bet()
     gamestate.flop()
