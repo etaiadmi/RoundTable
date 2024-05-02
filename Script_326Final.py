@@ -1,8 +1,10 @@
-#Code for 4/12 checkin 
-
-#Dan
+"Runs RoundTable Cards game."
 
 from random import randint
+
+DECK = [1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,6,6,6,6,7,7,7,7,
+            8,8,8,8,9,9,9,9,10,10,10,10,11,11,11,11,12,12,12,12,
+            13,13,13,13]
 
 class GameState:
     def __init__(self):
@@ -11,9 +13,7 @@ class GameState:
         Side effects:
             Initializes attribute deck.
         """
-        self.deck = [1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,6,6,6,6,7,7,7,7,
-            8,8,8,8,9,9,9,9,10,10,10,10,11,11,11,11,12,12,12,12,
-            13,13,13,13]
+        self.deck = DECK
         self.players = []
         self.river = []
     
@@ -85,7 +85,7 @@ class GameState:
         for n in range(len(self.deck)):
             pre_shuffle[n].append(self.deck[n])
         for c in pre_shuffle:
-            c.append(randint(0, 1000))
+            c.append(randint(0, 10000))
         post_shuffle = sorted(pre_shuffle, key=lambda x: x[1])
         self.deck = [c[0] for c in post_shuffle]
         
@@ -328,8 +328,14 @@ class HumanPlayer(Player):
             Returns: distribute_pot function is called which will give out 
             pot winnings. 
         """
-        outcome = "L"
-        return GameState.distribute_pot(outcome)
+        while True:
+            want_fold = input("Would you like to fold or continue playing? \
+                (Y/N)").capatalize()
+            if want_fold == "Y" or "N":
+                break
+        if want_fold == "Y":
+            outcome = "L"
+            return GameState.distribute_pot(outcome)
         
 class ComputerPlayerEasy(Player):
     """Prompts computer player to choose the two highest cards
@@ -377,8 +383,8 @@ class ComputerPlayerEasy(Player):
                                                      #outcome W for human player
             
         
-def game():
-    """Plays 1 round of RoundTable Cards.
+def game(gamestate, human, computer):
+    """Plays 1 game of RoundTable Cards.
     """
     gamestate.shuffle()
     gamestate.deal()
@@ -403,15 +409,16 @@ def main():
     if gamestate.level == "":
         computer = ComputerPlayerHard(gamestate)
     gamestate.players.append(computer)
-    while 1 != 0:
-        game()
-        while 1 != 0:
+    while True:
+        game(gamestate, human, computer)
+        while True:
             another = input(
-                "Would you like to play another game? (Y/N)").capitalize
+                "Would you like to play another game? (Y/N)").capitalize()
             if another == "Y" or "N":
                 break
         if another == "Y":
-            while 1 != 0:
+            gamestate.deck = DECK
+            while True:
                 level=int(input(
                     "What level bot would you like to play against: "))
                 if level == "":
@@ -421,13 +428,15 @@ def main():
                     if gamestate.level == "":
                         computer = ComputerPlayerHard(gamestate)
                         break
-            while 1 != 0:
+            while True:
                 more_money=input(
-                    "Would you like to add more more money to your chips? (Y/N)")
+                    "Would you like to add more more money to your chips? \
+                        (Y/N)").capitalize()
                 if more_money == "Y":
-                    while 1 != 0:
+                    while True:
                         money=int(input(
-                            "How much would you like to add to your chips in dollars?"))
+                            "How much would you like to add to your chips in \
+                                dollars?"))
                         if money >= 0:
                             gamestate.money = money
                             break
