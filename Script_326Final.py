@@ -183,7 +183,7 @@ class GameState:
             self.money(int): The money of the player after the distribution 
             of the pot. 
         """
-        final_result = outcome[1]  
+        final_result = outcome[0]  
         if final_result == 'W':
             print(f"You won ${self.total_pot}!")
             self.money += self.total_pot  
