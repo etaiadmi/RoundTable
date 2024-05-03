@@ -384,6 +384,9 @@ class ComputerPlayerEasy(Player):
         
 def game(gamestate, human, computer):
     """Plays 1 game of RoundTable Cards.
+    
+    Side effects:
+        - 
     """
     gamestate.shuffle()
     gamestate.deal()
@@ -414,15 +417,12 @@ def game(gamestate, human, computer):
                     computer_rank = computer.rank()
                     gamestate.point_comparison(human_rank, computer_rank)
                     gamestate.distrbute_pot(outcome)
-                    
-                    
-                    
-    
-    
-    return 
 
 def main():
     """Runs as many RoundTable Cards games as wanted.
+    
+    Side effects:
+        - 
     """
     gamestate = GameState()
     gamestate.begin_game()
@@ -445,13 +445,13 @@ def main():
             while True:
                 level=int(input(
                     "What level bot would you like to play against: "))
-                if level == "":
-                    gamestate.level = level
-                    if gamestate.level == "":
-                        computer = ComputerPlayerEasy(gamestate)
-                    if gamestate.level == "":
-                        computer = ComputerPlayerHard(gamestate)
-                        break
+                if level == "" or "":
+                    break
+            gamestate.level = level
+            if gamestate.level == "":
+                computer = ComputerPlayerEasy(gamestate)
+            if gamestate.level == "":
+                computer = ComputerPlayerHard(gamestate)
             while True:
                 more_money=input(
                     "Would you like to add more more money to your chips? \
