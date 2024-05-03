@@ -141,12 +141,34 @@ class GameState:
         elif player_points < computer_points:
             outcome = "L"
             return ("You lost. Your opponent had "
-                f"{computer_points - player_points} "
+                f"{computer_points - player_points} points"
                 f"more than you."), outcome
         else:
             outcome = "T"
             return (f"It's a draw! The pot will be split evenly. Each player has "
                 f"{player_points} points"), outcome
+            
+    def turn(self):
+        while True:
+            fold_decision = input("Do you want to fold? (Y/N): ").capitalize()
+            if fold_decision == "Y":
+                self.players[0].fold()
+                play_on = False
+                return play_on
+            elif fold_decision == "N":
+                play_on = True
+                
+                player_bet = self.players[0].player_bet()
+                cpu_bet = self.players[1].cpu_bet()
+                
+                if cpu_bet > player_bet:
+                    print("The CPU raised the bet.")
+                    continue
+                elif cpu_bet == player_bet:
+                    print("The CPU called your bet.")
+                    break
+                
+        return play_on
 
     def distribute_pot(self,outcome):
         """ Distributes the pot to the winner
