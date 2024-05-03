@@ -107,6 +107,7 @@ class GameState:
             Takes a card from the deck and adds it to the river.
         """
         self.river.append(self.deck.pop())
+        print(self.river)
         
     def flop(self):
         """Flips threes cards from the deck to the river.
@@ -117,6 +118,7 @@ class GameState:
         self.river.append(self.deck.pop())
         self.river.append(self.deck.pop())
         self.river.append(self.deck.pop())
+        print(self.river)
         
     def point_comparison(self, player_points, computer_points):
         """Comapres the point values of the player and computer and determines who
@@ -368,8 +370,8 @@ class ComputerPlayerEasy(Player):
     """
     def cpu_choose_initial_cards(self):
         while len(self.final_hand) <2:
-            choice = max(self.initial.cards)
-            if choice in self.initial.cards:
+            choice = max(self.initial_cards)
+            if choice in self.initial_cards:
                 self.final_hand.append(choice)
                 self.initial_cards.remove(choice)
             else:
@@ -414,22 +416,22 @@ def game(gamestate, human, computer):
     gamestate.deal()
     human.choose_initial_cards()
     computer.cpu_choose_initial_cards()
-    gamestate.turn()
+    play_on = gamestate.turn()
     if play_on == False:
         gamestate.distrubute_pot("L")
     else:
         gamestate.flop()
-        gamestate.turn()
+        play_on = gamestate.turn()
         if play_on == False:
             gamestate.distrubute_pot("L")
         else:
             gamestate.flip()
-            gamestate.turn()
+            play_on = gamestate.turn()
             if play_on == False:
                 gamestate.distrubute_pot("L")
             else:
                 gamestate.flip()
-                gamestate.turn()
+                play_on = gamestate.turn()
                 if play_on == False:
                     gamestate.distrubute_pot("L")
                 else:
@@ -437,7 +439,7 @@ def game(gamestate, human, computer):
                     gamestate.turn()
                     human_rank = human.rank()
                     computer_rank = computer.rank()
-                    gamestate.point_comparison(human_rank, computer_rank)
+                    outcome = gamestate.point_comparison(human_rank, computer_rank)
                     gamestate.distrbute_pot(outcome)
 
 def main():
