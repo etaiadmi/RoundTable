@@ -1,6 +1,8 @@
 "Runs RoundTable Cards game."
 
 from random import randint
+from argparse import ArgumentParser
+import sys
 
 DECK = [1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,6,6,6,6,7,7,7,7,
             8,8,8,8,9,9,9,9,10,10,10,10,11,11,11,11,12,12,12,12,
@@ -545,3 +547,20 @@ def main():
                     break
         if another == "N":
             break
+def parse_args(arglist):
+    """ Parse command-line arguments.
+    Args:
+        arglist (list of str): arguments from the command line.
+    Arguments:
+        - name: player name
+        - phone number: player's phone number
+    Returns:
+        namespace: the parsed arguments, as a namespace.
+    """
+    parser = ArgumentParser()
+    parser.add_argument("name", type=str,  help="name of player")
+    parser.add_argument("phone number", type=str, help="phone number of player")
+    return parser.parse_args(arglist)
+
+if __name__ == "__main__":
+    args = parse_args(sys.argv[1:])
