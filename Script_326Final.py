@@ -55,6 +55,11 @@ class GameState:
             prints messages explaining game to sd out
         Returns: none
         """
+        print(f"""Welcome {args.name}. We are collecting your phone number: 
+              {args.phone_numer} in case we need to contact you 
+              regaurding unsafe gambling behaviour. Please be advised to 
+              gamble responsibly""")
+        
         print("""\n\n\n
             -------------------Welcome to RoundTable Cards------------------\n 
             You will build a hand of 7 cards, choosing to keep 2 of 3 cards 
@@ -559,7 +564,7 @@ def parse_args(arglist):
     """
     parser = ArgumentParser()
     parser.add_argument("name", type=str,  help="name of player")
-    parser.add_argument("phone number", type=str, help="phone number of player")
+    parser.add_argument("phone_number", type=str, help="phone number of player")
     return parser.parse_args(arglist)
 
 if __name__ == "__main__":
