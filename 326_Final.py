@@ -296,8 +296,8 @@ class HumanPlayer(Player):
         card2=input("second card")
         cards=[card1,card2]
         if cards in self.initial_cards:
-            self.final=[]
-            self.final+=cards
+            self.rd1cards=[]
+            self.rd1cards+=cards
     def bet(self):
             print("Money left to bet: " + self.money)
             while True:
@@ -326,7 +326,6 @@ class HumanPlayer(Player):
         card5=input("5 card choice")
         card6=input("6 card choice")
         card7=input("7 card choice")
-        #add cards to self.final if valid
         
 class ComputerPlayerEasy(Player):
     """Prompts computer player to choose the two highest cards
@@ -448,8 +447,8 @@ def game():
             #comp rd3 bet
             human.river()
             #comp choose cards
-            hrank=play.ranking(human.final)
-            crank=play.ranking(comp.final)
+            hrank=play.ranking(human.final_hand)
+            crank=play.ranking(comp.final_hand)
             outcome=play.point_comparison(hrank,crank)
         game.distribute_pot(outcome, play.total_pot)
         game.end()
