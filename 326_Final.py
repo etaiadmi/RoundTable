@@ -350,9 +350,9 @@ class ComputerPlayerEasy(Player):
             else:
                 print("CPU_initial card error")
 
-    def cpu_bet(self,bet):
-        """ cpu makes a percentage bet based on the money it has
-        Args: None
+    def easy_cpu_bet(self,bet):
+        """ easy_cpu makes a percentage bet based on the money it has
+        Args: rd1 - the 
             Side effects:
                 - Increases the total_pot amount.
                 - Changes the amount of money of the computer player
@@ -362,24 +362,16 @@ class ComputerPlayerEasy(Player):
                 total_pot(int) - updates the total amount of money in the pot 
 
         """
-        if self.money< gamestate_obj.bet:
-            bet = self.money  # all in 
+    
+        
+        if bet<= self.money: #call
+            super().total_pot += bet
             self.money -= bet
-            self.total_pot += bet
-            print(f"CPU (Easy) has bet ${bet}")
-            
-
-        elif self.money >= gamestate_obj.bet: #call
-            bet = gamestate_obj.bet
-            self.money -= bet
-            self.total_pot = bet
-            print(f"CPU (Easy) has bet ${bet}")
-            
-             
+            return bet
         else:
-            outcome = 'W'
-            return gamestate_obj.distribute_pot(outcome) #should trigger method 
-                                                     #outcome W for human player
+            super().fold=True
+            super().outcome = "W"
+        
 class ComputerPlayerHard(Player):
     
     def cpu_choose_initial_cards(self):
@@ -391,8 +383,8 @@ class ComputerPlayerHard(Player):
             else:
                 print("CPU_initial card error")
 
-    def cpu_bet(self,bet):
-        """ cpu makes a bet
+    def hard_cpu_bet(self,bet):
+        """ hard_cpu makes a bet
         Args: None
             Side effects:
                 - Increases the total_pot amount.
@@ -403,32 +395,20 @@ class ComputerPlayerHard(Player):
                 total_pot(int) - updates the total amount of money in the pot 
 
         """
-        strength = Player.Ranking(self.hand)
+        strength = self.Player.Ranking(self.hand)
         bluffer = randint(1, 100)
-        if bluffer <= 10:
-            bet = self.money 
-            self.money -=bet
-            self.total_pot += bet
-            print(f"CPU (Hard) has bet ${bet}")
-            return bet
-
-        elif strength >35 and self.money >= bet:
-            self.money -=bet
-            self.total_pot += bet
-            print(f"CPU (Hard) has bet ${bet}")
-            return bet
-            
-        elif strength > 50 and self.money >0:
-            bet = self.money
-            self.money -=bet
-            self.total_pot += bet
-            print(f"CPU (Hard) has bet ${bet}")
-            return bet
-
+        if bluffer <= 30: 
+            super().total_pot += bet
+            self.money -= bet
+            return bet 
+        elif strength >4: #call
+            super().total_pot += bet
+            self.money -= bet
+            return bet 
         else:
-            outcome = 'W'
-            return gamestate_obj.distribute_pot(outcome) #should trigger method 
-                                                     #outcome W for human player
+            super().fold=True
+            super().outcome = "W"
+                                                    
         
 def game():
     game=GameState
