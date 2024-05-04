@@ -451,7 +451,7 @@ def game():
             crank=play.ranking(comp.final_hand)
             outcome=play.point_comparison(hrank,crank)
         game.distribute_pot(outcome, play.total_pot)
-        game.end()
+        game.play_again()
 
 
 def parse_args(arglist):
