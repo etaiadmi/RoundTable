@@ -15,7 +15,6 @@ class GameState:
             Initializes attribute deck.
         """
         self.deck = DECK
-        self.players = []
         self.river = []
         self.playing=True
 
@@ -444,13 +443,13 @@ def game():
         while play.fold==False:
             human.rd1()
             human.choose_rd1()
-            rd1_bet=human.bet_rd1()
+            rd1_bet=human.bet()
             #comp choose iniital card (rd1_bet)
             play.rd2()
-            rd2_bet=human.rd2_bet()
+            rd2_bet=human.bet()
             #comp rd2 bet
             play.rd3()
-            rd3_bet=human.rd3_bet()
+            rd3_bet=human.bet()
             #comp rd3 bet
             human.river()
             #comp choose cards
