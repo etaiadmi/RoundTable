@@ -201,6 +201,8 @@ class Player:
         self.total_pot = 0
         self.initial_cards = []
         self.final_hand = []
+        self.gamestate_obj = gamestate_obj
+
         
     def Ranking(self, hand):
         """
@@ -336,7 +338,7 @@ class HumanPlayer(Player):
                     self.money -= bet
                     self.total_pot += bet
                     print(f"Player has bet ${bet}")
-                    return self.total_pot
+                    gamestate_obj.bet = bet
                 elif bet <= 0:
                     print("You must bet a positive whole number.")
                 else:
@@ -370,14 +372,14 @@ class ComputerPlayerEasy(Player):
     """
     def cpu_choose_initial_cards(self):
         while len(self.final_hand) <2:
-            choice = max(self.initial_cards)
+            choice = min(self.initial_cards)
             if choice in self.initial_cards:
                 self.final_hand.append(choice)
                 self.initial_cards.remove(choice)
             else:
                 print("CPU_initial card error")
 
-    def cpu_bet(self):
+    def cpu_bet(self,bet):
         """ cpu makes a percentage bet based on the money it has
         Args: None
             Side effects:
@@ -389,22 +391,73 @@ class ComputerPlayerEasy(Player):
                 total_pot(int) - updates the total amount of money in the pot 
 
         """
-        if self.money > 0 and self.total_pot <400:
-            bet = self.money/10
+        if self.money< gamestate_obj.bet:
+            bet = self.money  # all in 
+            self.money -= bet
+            self.total_pot += bet
+            print(f"CPU (Easy) has bet ${bet}")
+            
 
+        elif self.money >= gamestate_obj.bet: #call
+            bet = gamestate_obj.bet
             self.money -= bet
             self.total_pot = bet
-            print(f"CPU has bet ${bet}")
-            return self.total_pot # Return updated total_pot
-        elif self.money == 0: 
-            print("CPU is broke") #when cpu is broke do we rebuy in? 
-            return print("VICTORY") #need to recognize certain victory 
+            print(f"CPU (Easy) has bet ${bet}")
+            
+             
+        else:
+            outcome = 'W'
+            return gamestate_obj.distribute_pot(outcome) #should trigger method 
+                                                     #outcome W for human player
+class ComputerPlayerHard(Player):
+    
+    def cpu_choose_initial_cards(self):
+        while len(self.final_hand) <2:
+            choice = min(self.initial_cards)
+            if choice in self.initial_cards:
+                self.final_hand.append(choice)
+                self.initial_cards.remove(choice)
+            else:
+                print("CPU_initial card error")
+
+    def cpu_bet(self,bet):
+        """ cpu makes a bet
+        Args: None
+            Side effects:
+                - Increases the total_pot amount.
+                - Changes the amount of money of the computer player
+                - If folds then it will call the distribute_pot and give out 
+                earnings
+            Returns:
+                total_pot(int) - updates the total amount of money in the pot 
+
+        """
+        strength = Player.Ranking(self.hand)
+        bluffer = randint(1, 100)
+        if bluffer <= 10:
+            bet = self.money 
+            self.money -=bet
+            self.total_pot += bet
+            print(f"CPU (Hard) has bet ${bet}")
+            return bet
+
+        elif strength >35 and self.money >= bet:
+            self.money -=bet
+            self.total_pot += bet
+            print(f"CPU (Hard) has bet ${bet}")
+            return bet
+            
+        elif strength > 50 and self.money >0:
+            bet = self.money
+            self.money -=bet
+            self.total_pot += bet
+            print(f"CPU (Hard) has bet ${bet}")
+            return bet
 
         else:
             outcome = 'W'
-            return GameState.distribute_pot(outcome) #should trigger method 
+            return gamestate_obj.distribute_pot(outcome) #should trigger method 
                                                      #outcome W for human player
-            
         
 def game(gamestate, human, computer):
     """Plays 1 game of RoundTable Cards.
