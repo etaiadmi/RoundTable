@@ -299,15 +299,25 @@ class HumanPlayer(Player):
             self.final=[]
             self.final+=cards
     def bet_rd1(self):
-        print("Money left to bet: " + self.money)
-        bet = input("How much you bet?")
-        if #bet is valid
+            print("Money left to bet: " + self.money)
+            while True:
+                fold_decision = input("Do you want to fold? (Y/N): ").capitalize()
+                if fold_decision == "Y":
+                    super().outcome="L"
+                    super().fold=True
+                    break
+                elif fold_decision == "N":
+                    break
+                print("Please type in 'Y' or 'N'")
+            while True:
+                bet = int(input("How much would you like to bet? (integers only)"))
+                if 0 <= bet <= self.money:
+                    break
+                else:
+                    print(f"Please bet a positive integer or 0 that is less than \
+                        your money to bet, {self.money}.")
+            self.money -= bet
             super().total_pot += bet
-            #take money from player total
-            return bet
-        elif #fold:
-            super().fold=True
-            super().outcome="L"
     
     def river(self): 
         print("Choose 5 cards from: " + super().river)
