@@ -17,6 +17,7 @@ class GameState:
         self.deck = DECK
         self.players = []
         self.river = []
+        self.playing=True
 
     def begin_game(self):
         """
@@ -72,26 +73,29 @@ class GameState:
         self.deck = [c[0] for c in post_shuffle]
 
     def distribute_pot(self,outcome, pot):
-        """ Distributes the pot to the winner
-        Args:
-            outcome(str): The outcome result string from the 
-            point_comprehenstion method
-        Side effects:
-            The money of the player may increase if they win
-        Returns:
-            self.money(int): The money of the player after the distribution 
-            of the pot. 
-        """
-        final_result = outcome[0]  
-        if final_result == 'W':
-            print(f"You won ${self.total_pot}!")
-            self.money += self.total_pot  
-        elif final_result == 'L':
-            print("You lost!")
-        elif final_result == 'T':
-            print(f"It's a chop! You won ${self.total_pot/2}!")
-            self.money += self.total_pot / 2  
-        return self.money
+        if outcome == "W":
+            print (f"Congrats!! You won {pot} dollars with your super poker 
+                   skills.")
+            self.money+=pot
+        elif outcome=="L":
+            print(f"You have been beat. Womp womp. You lost {pot} dollars")
+            self.money -=pot
+        elif outcome == "T":
+            print("Wow, there was a tie. That's rare. You will break even")
+            self.money += (pot/2)
+    
+    def play_again(self):
+        play_again=input("Do you want to play again (y or n)").capitalize
+        if play_again=="Y":
+            self.playing=True
+            print (f"You have {self.money} left. How much money would you like 
+                   to add. (write 0 if none)")
+            new_money=input("Money to add: ")
+            self.money+=new_money
+        else:
+            print("Thanks for playing!!")
+            self.playing=False
+
 
 class Player: 
     def __init__(self, gamestate_obj):
