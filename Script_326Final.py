@@ -18,6 +18,8 @@ class GameState:
         self.deck = DECK
         self.players = []
         self.river = []
+        self.bet = 0
+        self.outcome = ""
     
     def __eq__(self, other):
         """
@@ -55,11 +57,6 @@ class GameState:
             prints messages explaining game to sd out
         Returns: none
         """
-        print(f"""Welcome {args.name}. We are collecting your phone number: 
-              {args.phone_numer} in case we need to contact you 
-              regaurding unsafe gambling behaviour. Please be advised to 
-              gamble responsibly""")
-        
         print("""\n\n\n
             -------------------Welcome to RoundTable Cards------------------\n 
             You will build a hand of 7 cards, choosing to keep 2 of 3 cards 
@@ -162,11 +159,16 @@ class GameState:
             fold_decision = input("Do you want to fold? (Y/N): ").capitalize()
             if fold_decision == "Y":
                 self.players[0].fold()
-                play_on = False
-                return play_on
+                outcome = "L"
             elif fold_decision == "N":
-                play_on = True
+                self.chips_input = int(input("Bet amount: "))
                 
+               
+               
+               
+               
+               
+               
                 player_bet = self.players[0].player_bet()
                 cpu_bet = self.players[1].cpu_bet()
                 
@@ -209,6 +211,7 @@ class Player:
         self.initial_cards = []
         self.final_hand = []
         self.gamestate_obj = gamestate_obj
+        self.chips_input = 0
 
         
     def Ranking(self, hand):
@@ -341,11 +344,12 @@ class HumanPlayer(Player):
         while True:
             try:
                 bet = int(input("Bet amount: "))
-                if 0 < bet <= self.money:
+                if 0 < bet <= self.money and self.gamestate_obj.bet:
                     self.money -= bet
                     self.total_pot += bet
                     print(f"Player has bet ${bet}")
-                    gamestate_obj.bet = bet
+                    self.gamestate_obj.bet = bet
+                    
                 elif bet <= 0:
                     print("You must bet a positive whole number.")
                 else:
@@ -478,22 +482,22 @@ def game(gamestate, human, computer):
     computer.cpu_choose_initial_cards()
     play_on = gamestate.turn()
     if play_on == False:
-        gamestate.distrubute_pot("L")
+        gamestate.distribute_pot("L")
     else:
         gamestate.flop()
         play_on = gamestate.turn()
         if play_on == False:
-            gamestate.distrubute_pot("L")
+            gamestate.distribute_pot("L")
         else:
             gamestate.flip()
             play_on = gamestate.turn()
             if play_on == False:
-                gamestate.distrubute_pot("L")
+                gamestate.distribute_pot("L")
             else:
                 gamestate.flip()
                 play_on = gamestate.turn()
                 if play_on == False:
-                    gamestate.distrubute_pot("L")
+                    gamestate.distribute_pot("L")
                 else:
                     gamestate.flip()
                     gamestate.turn()
@@ -564,7 +568,7 @@ def parse_args(arglist):
     """
     parser = ArgumentParser()
     parser.add_argument("name", type=str,  help="name of player")
-    parser.add_argument("phone_number", type=str, help="phone number of player")
+    parser.add_argument("phone number", type=str, help="phone number of player")
     return parser.parse_args(arglist)
 
 if __name__ == "__main__":

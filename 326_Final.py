@@ -298,7 +298,7 @@ class HumanPlayer(Player):
         if cards in self.initial_cards:
             self.final=[]
             self.final+=cards
-    def bet_rd1(self):
+    def bet(self):
             print("Money left to bet: " + self.money)
             while True:
                 fold_decision = input("Do you want to fold? (Y/N): ").capitalize()
@@ -327,29 +327,6 @@ class HumanPlayer(Player):
         card6=input("6 card choice")
         card7=input("7 card choice")
         #add cards to self.final if valid
-    
-    def rd2_bet(self):
-        print("Money left to bet: " + self.money)
-        bet = input("How much you bet?")
-        if #bet is valid
-            super().total_pot += bet
-            #take money from player total
-            return bet
-        elif #fold:
-            super().fold=True
-            super().outcome="L"
-    
-    def rd3_bet(self):
-        print("Money left to bet: " + self.money)
-        bet = input("How much you bet?")
-        if #bet is valid
-            super().total_pot += bet
-            #take money from player total
-            return bet
-        elif #fold:
-            super().fold=True
-            super().outcome="L"
-
         
 class ComputerPlayerEasy(Player):
     """Prompts computer player to choose the two highest cards
