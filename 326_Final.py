@@ -319,13 +319,20 @@ class HumanPlayer(Player):
             self.money -= bet
             super().total_pot += bet
     
-    def river(self): 
-        print("Choose 5 cards from: " + super().river)
-        card3=input("third card choice")
-        card4=input("4 card choice")
-        card5=input("5 card choice")
-        card6=input("6 card choice")
-        card7=input("7 card choice")
+    def choose_final_cards(self):
+        all_cards = self.rd1cards + super().river
+        print(f"Here are all the selectable cards: {all_cards}")
+        final_hand = []
+        while len(final_hand) < 7:
+            pick = int(input("Choose the final cards to add to your hand: "))
+            if pick in all_cards:
+                final_hand.append(pick)
+                all_cards.remove(pick)
+                print(f"Your current hand is: {final_hand}")
+            else:
+                print("Please select from one of the available cards.")
+        print(f"Here is your final hand: {final_hand}")
+        self.final_hand = final_hand
         
 class ComputerPlayerEasy(Player):
     """Prompts computer player to choose the two highest cards
