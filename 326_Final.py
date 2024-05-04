@@ -452,7 +452,7 @@ def game():
             play.rd3()
             rd3_bet=human.rd3_bet()
             #comp rd3 bet
-            human.river()
+            human.choose_final_cards()
             #comp choose cards
             hrank=play.ranking(human.final_hand)
             crank=play.ranking(comp.final_hand)
