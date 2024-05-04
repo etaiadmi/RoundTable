@@ -50,7 +50,14 @@ class GameState:
             difficultues for bots: 1 being easiest and 5 being hardest
             ====================================================================
             \n\n\n""")
-        self.level=int(input("What level bot would you like to play against: "))
+        lev=input("""do you want to play easy or hard version: (must type 
+                  'easy' or 'hard')""")
+        if lev in ["easy", "hard"]:
+            self.level=lev
+        else:
+            print("""You were unable to type the level correctly so you should 
+                  probably just play the easy level""")
+            self.level="easy"
         print ("""You also will bet at the end of each round (after cards are
         dealt then after each card in the river is revealed). How much money
         do you wish to bring to the table (bot will match you)""")
@@ -92,6 +99,13 @@ class GameState:
                    to add. (write 0 if none)")
             new_money=input("Money to add: ")
             self.money+=new_money
+            the_level =input("Do you want computer level easy or hard?")
+            if the_level in ["easy", "hard"]:
+                self.level = the_level
+            else:
+                print ("""You were unable to correctly type easy or hard so 
+                       you probably should play the easy game""")
+                self.level = "easy"
         else:
             print("Thanks for playing!!")
             self.playing=False
@@ -427,32 +441,32 @@ class ComputerPlayerHard(Player):
 def game():
     game=GameState
     game.begin_game()
-    play=Player(game)
-    human=HumanPlayer(game)
-    if game.level=="easy":
-        comp=ComputerPlayerEasy(game)
-    elif game.level== "hard":
-        comp=ComputerPlayerHard(game)
-    human.rd1()
-    human.choose_rd1()
-    rd1_bet=human.bet_rd1()
-    #comp choose iniital card (rd1_bet)
-    play.rd2()
-    rd2_bet=human.rd2_bet()
-    #comp rd2 bet
-    play.rd3()
-    rd3_bet=human.rd3_bet()
-    #comp rd3 bet
-    human.river()
-    #comp choose cards
-    hrank=play.ranking(human.final)
-    crank=play.ranking(comp.final)
-    outcome=play.point_comparison(hrank,crank)
-    game.distribute_pot(outcome, play.total_pot)
-    game.end()
+    while game.playing ==True:
+        play=Player(game)
+        human=HumanPlayer(game)
+        if game.level=="easy":
+            comp=ComputerPlayerEasy(game)
+        elif game.level== "hard":
+            comp=ComputerPlayerHard(game)
+        while play.fold==False:
+            human.rd1()
+            human.choose_rd1()
+            rd1_bet=human.bet_rd1()
+            #comp choose iniital card (rd1_bet)
+            play.rd2()
+            rd2_bet=human.rd2_bet()
+            #comp rd2 bet
+            play.rd3()
+            rd3_bet=human.rd3_bet()
+            #comp rd3 bet
+            human.river()
+            #comp choose cards
+            hrank=play.ranking(human.final)
+            crank=play.ranking(comp.final)
+            outcome=play.point_comparison(hrank,crank)
+        game.distribute_pot(outcome, play.total_pot)
+        game.end()
 
-#main func
-while game.play==true
 
 def parse_args(arglist):
     """ Parse command-line arguments.
