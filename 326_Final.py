@@ -423,7 +423,7 @@ class ComputerPlayerEasy(Player):
         cpu_choice = []
         for card in range(8):
             final_hand = final_hand.pop(card)
-            cpu_choice.append(Ranking(final_hand), card)
+            cpu_choice.append(Player.Ranking(final_hand), card)
         cpu_choice = sorted(cpu_choice, reverse=False)
         final_hand.pop(cpu_choice[0][1])
         return final_hand
@@ -547,15 +547,15 @@ def game():
             human.rd1()
             human.choose_rd1()
             rd1_bet=human.bet_rd1()
-            #comp choose iniital card (rd1_bet)
+            comp.rd1_cpu_bet()
             play.rd2()
             rd2_bet=human.rd2_bet()
-            #comp rd2 bet
+            comp.rd2_cpu_bet()
             play.rd3()
             rd3_bet=human.rd3_bet()
-            #comp rd3 bet
+            comp.rd3_cpu_bet()
             human.choose_final_cards()
-            #comp choose cards
+            comp.cpu_choose_final_cards()
             hrank=play.ranking(human.final_hand)
             crank=play.ranking(comp.final_hand)
             outcome=play.point_comparison(hrank,crank)
