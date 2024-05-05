@@ -54,7 +54,7 @@ class GameState:
         Returns: none
         """
         print(f"""Welcome {args.name}. We are collecting your phone number: 
-              {args.phone_numer} in case we need to contact you 
+              {args.phone_number} in case we need to contact you 
               regaurding unsafe gambling behaviour. Please be advised to 
               gamble responsibly""")
         
@@ -135,9 +135,10 @@ class GameState:
 
 class Player: 
     def __init__(self, gamestate_obj):
+        self.total_pot = 0 #money bet in pot, combo of both players
         self.money=gamestate_obj.money # money for human
         self.deck=gamestate_obj.shuffle()
-        self.total_pot = 0 #money bet in pot, combo of both players
+        self.deck = gamestate_obj.deck[:]
         self.initial_cards = []
         self.fold=False
         self.river= []
@@ -293,6 +294,9 @@ class Player:
                 f"{player_points} points"), outcome
    
 class HumanPlayer(Player):
+    def __init__(self, gamestate_obj):
+        super().__init__(gamestate_obj)
+        
     def choose_rd1(self): 
         """
         Prompts the player to choose two cards to keep from their initially dealt three cards.
@@ -320,25 +324,26 @@ class HumanPlayer(Player):
         self.rd1cards = cards if cards in self.initial_cards else self.rd1cards    
             
     def bet(self):
-            print("Money left to bet: " + self.money)
-            while True:
-                fold_decision = input("Do you want to fold? (Y/N): ").capitalize()
-                if fold_decision == "Y":
-                    super().outcome="L"
-                    super().fold=True
-                    break
-                elif fold_decision == "N":
-                    break
-                print("Please type in 'Y' or 'N'")
-            while True:
-                bet = int(input("How much would you like to bet? (integers only)"))
-                if 0 <= bet <= self.money:
-                    break
-                else:
-                    print(f"Please bet a positive integer or 0 that is less than \
-                        your money to bet, {self.money}.")
-            self.money -= bet
-            super().total_pot += bet
+    
+        print(f"Money left to bet: {self.money}")
+        while True:
+            fold_decision = input("Do you want to fold? (Y/N): ").capitalize()
+            if fold_decision == "Y":
+                super().outcome="L"
+                super().fold=True
+                break
+            elif fold_decision == "N":
+                break
+            print("Please type in 'Y' or 'N'")
+        while True:
+            bet = int(input("How much would you like to bet? (integers only)"))
+            if 0 <= bet <= self.money:
+                break
+            else:
+                print(f"Please bet a positive integer or 0 that is less than \
+                    your money to bet, {self.money}.")
+        self.money -= bet
+        super().total_pot += bet 
     
     def choose_final_cards(self):
         all_cards = self.rd1cards + super().river
@@ -554,7 +559,7 @@ class ComputerPlayerHard(Player):
                                                                          
         
 def game():
-    game=GameState
+    game=GameState()
     game.begin_game()
     while game.playing ==True:
         play=Player(game)
@@ -566,13 +571,13 @@ def game():
         while play.fold==False:
             human.rd1()
             human.choose_rd1()
-            rd1_bet=human.bet_rd1()
+            human.bet()
             comp.rd1_cpu_bet()
             play.rd2()
-            rd2_bet=human.rd2_bet()
+            human.bet()
             comp.rd2_cpu_bet()
             play.rd3()
-            rd3_bet=human.rd3_bet()
+            human.bet()
             comp.rd3_cpu_bet()
             human.choose_final_cards()
             comp.cpu_choose_final_cards()
@@ -600,3 +605,5 @@ def parse_args(arglist):
 
 if __name__ == "__main__":
     args = parse_args(sys.argv[1:])
+    print("Parsing command-line arguments...")
+    game()
