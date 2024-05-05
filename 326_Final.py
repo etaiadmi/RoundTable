@@ -18,6 +18,28 @@ class GameState:
         self.players = []
         self.river = []
         self.playing=True
+        
+    def __str__(self):
+        """
+        Return a string representation of the current game state, listing 
+        each player and their cards.
+
+        Returns:
+            str: A formatted string where each line contains a player's name 
+            followed by a list of their cards. Each player's entry is separated 
+            by a newline. The format of each line is 
+            'PlayerName: Card1, Card2, ...'.
+
+        Side effects:
+            Reads the 'players' attribute of the instance to gather names and 
+            cards, but does not modify any data.
+        """
+        player_cards = []
+        for player in self.players:
+            cards_str = ', '.join(str(card) for card in player.cards)
+            player_cards.append(f'{player.name}: {cards_str}')
+        return '\n'.join(player_cards)
+
 
     def begin_game(self):
         """
@@ -294,15 +316,12 @@ class HumanPlayer(Player):
         Returns:
             None
         """
-
-    
         print("Your initial cards are:", self.initial_cards)
-        card1=input("first card")
-        card2=input("second card")
-        cards=[card1,card2]
-        if cards in self.initial_cards:
-            self.rd1cards=[]
-            self.rd1cards+=cards
+        card1 = input("first card")
+        card2 = input("second card")
+        cards = [card1, card2]
+        self.rd1cards = cards if cards in self.initial_cards else self.rd1cards    
+            
     def bet(self):
     
         print(f"Money left to bet: {self.money}")
