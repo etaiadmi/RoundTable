@@ -132,6 +132,7 @@ class Player:
         self.initial_cards.append(self.deck.pop())
         self.initial_cards.append(self.deck.pop())
         self.initial_cards.append(self.deck.pop())
+        
    
     def rd2(self):
         """Flips three cards from the deck to the river
@@ -351,7 +352,7 @@ class ComputerPlayerEasy(Player):
             else:
                 print("CPU_initial card error")
 
-    def easy_cpu_bet(self,bet):
+    def rd1_cpu_bet(self,bet):
         """ easy_cpu makes a percentage bet based on the money it has
         Args: rd1 - the 
             Side effects:
@@ -372,7 +373,61 @@ class ComputerPlayerEasy(Player):
         else:
             super().fold=True
             super().outcome = "W"
+
+    def rd2_cpu_bet(self,bet):
+        """ easy_cpu makes a percentage bet based on the money it has
+        Args: rd1 - the 
+            Side effects:
+                - Increases the total_pot amount.
+                - Changes the amount of money of the computer player
+                - If folds then it will call the distribute_pot and give out 
+                earnings
+            Returns:
+                total_pot(int) - updates the total amount of money in the pot 
+
+        """
+    
         
+        if bet<= self.money: #call
+            super().total_pot += bet
+            self.money -= bet
+            return bet
+        else:
+            super().fold=True
+            super().outcome = "W"
+            
+    def rd3_cpu_bet(self,bet):
+        """ easy_cpu makes a percentage bet based on the money it has
+        Args: rd1 - the 
+            Side effects:
+                - Increases the total_pot amount.
+                - Changes the amount of money of the computer player
+                - If folds then it will call the distribute_pot and give out 
+                earnings
+            Returns:
+                total_pot(int) - updates the total amount of money in the pot 
+
+        """
+    
+        
+        if bet<= self.money: #call
+            super().total_pot += bet
+            self.money -= bet
+            return bet
+        else:
+            super().fold=True
+            super().outcome = "W"
+
+    def cpu_choose_final_cards(self,hand):
+        final_hand = super().river +self.hand
+        cpu_choice = []
+        for card in range(8):
+            final_hand = final_hand.pop(card)
+            cpu_choice.append(Ranking(final_hand), card)
+        cpu_choice = sorted(cpu_choice, reverse=False)
+        final_hand.pop(cpu_choice[0][1])
+        return final_hand
+
 class ComputerPlayerHard(Player):
     
     def cpu_choose_initial_cards(self):
@@ -384,7 +439,7 @@ class ComputerPlayerHard(Player):
             else:
                 print("CPU_initial card error")
 
-    def hard_cpu_bet(self,bet):
+    def rd1_cpu_bet(self,bet):
         """ hard_cpu makes a bet
         Args: None
             Side effects:
@@ -396,20 +451,87 @@ class ComputerPlayerHard(Player):
                 total_pot(int) - updates the total amount of money in the pot 
 
         """
+        self.hand.extend([randint(1, 13),randint(1, 13),randint(1, 13),
+                          randint(1, 13),randint(1, 13)])
         strength = self.Player.Ranking(self.hand)
+        self.hand = self.hand[:-5]
         bluffer = randint(1, 100)
         if bluffer <= 30: 
             super().total_pot += bet
             self.money -= bet
             return bet 
-        elif strength >4: #call
+        elif strength >35: #call
             super().total_pot += bet
             self.money -= bet
             return bet 
         else:
             super().fold=True
             super().outcome = "W"
-                                                    
+    def rd2_cpu_bet(self,bet):
+        """ hard_cpu makes a bet
+        Args: None
+            Side effects:
+                - Increases the total_pot amount.
+                - Changes the amount of money of the computer player
+                - If folds then it will call the distribute_pot and give out 
+                earnings
+            Returns:
+                total_pot(int) - updates the total amount of money in the pot 
+
+        """
+        self.hand = self.hand+super().river
+        self.hand.extend([randint(1, 13),randint(1, 13)])
+        strength = self.Player.Ranking(self.hand)
+        self.hand = self.hand[:-5]
+        bluffer = randint(1, 100)
+        if bluffer <= 30: 
+            super().total_pot += bet
+            self.money -= bet
+            return bet 
+        elif strength >40: #call
+            super().total_pot += bet
+            self.money -= bet
+            return bet 
+        else:
+            super().fold=True
+            super().outcome = "W"
+
+    def rd3_cpu_bet(self,bet,hand):
+        """ hard_cpu makes a bet
+        Args: None
+            Side effects:
+                - Increases the total_pot amount.
+                - Changes the amount of money of the computer player
+                - If folds then it will call the distribute_pot and give out 
+                earnings
+            Returns:
+                total_pot(int) - updates the total amount of money in the pot 
+
+        """
+        strength = ComputerPlayerHard.cpu_choose_final_cards(self.hand)
+        bluffer = randint(1, 100)
+        if bluffer <= 50: 
+            super().total_pot += bet
+            self.money -= bet
+            return bet 
+        elif strength >40: #call
+            super().total_pot += bet
+            self.money -= bet
+            return bet 
+        else:
+            super().fold=True
+            super().outcome = "W"
+
+    def cpu_choose_final_cards(self,hand):
+        final_hand = super().river +self.hand
+        cpu_choice = []
+        for card in range(8):
+            final_hand = final_hand.pop(card)
+            cpu_choice.append(Player.Ranking(final_hand), card)
+        cpu_choice = sorted(cpu_choice, reverse=True)
+        final_hand.pop(cpu_choice[0][1])
+        return final_hand
+                                                                         
         
 def game():
     game=GameState
