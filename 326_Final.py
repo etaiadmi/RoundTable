@@ -316,6 +316,7 @@ class HumanPlayer(Player):
         card1 = input("first card")
         card2 = input("second card")
         cards = [card1, card2]
+        self.rd1cards = []
         self.rd1cards = cards if cards in self.initial_cards else self.rd1cards    
             
     def bet(self):
