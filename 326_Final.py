@@ -81,8 +81,8 @@ class GameState:
 
     def distribute_pot(self,outcome, pot):
         if outcome == "W":
-            print (f"Congrats!! You won {pot} dollars with your super poker 
-                   skills.")
+            print(f"Congrats!! You won {pot} dollars with your super poker")
+
             self.money+=pot
         elif outcome=="L":
             print(f"You have been beat. Womp womp. You lost {pot} dollars")
@@ -95,8 +95,8 @@ class GameState:
         play_again=input("Do you want to play again (y or n)").capitalize
         if play_again=="Y":
             self.playing=True
-            print (f"You have {self.money} left. How much money would you like 
-                   to add. (write 0 if none)")
+            print (f"You have {self.money} left. How much money would you like to add? "
+                "Write 0 if none.")
             new_money=input("Money to add: ")
             self.money+=new_money
             the_level =input("Do you want computer level easy or hard?")
