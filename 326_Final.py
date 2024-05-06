@@ -44,7 +44,8 @@ class GameState:
         self.river.append(self.deck.pop())
         self.river.append(self.deck.pop())
         self.river.append(self.deck.pop())
-        print(self.river)
+        str_river = [str(c) for c in self.river]
+        print("Community Cards: " + " ".join(str_river))
 
     def __str__(self):
         """
