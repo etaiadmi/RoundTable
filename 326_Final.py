@@ -167,6 +167,7 @@ class GameState:
         self.players[0].initial_cards = []
         self.players[0].pocket = []
         self.players[0].final_hand = []
+        self.fold = False
     
     def point_comparison(self, player_points, computer_points):
         """Comapres the point values of the player and computer and determines who
