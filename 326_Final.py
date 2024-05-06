@@ -28,18 +28,21 @@ class GameState:
         """Deals first three cards.
         
         Side effects:
-            Distributes three cards each to HumanPlayer and ComputerPlayer 
-            instances
+            - Distributes three cards each to HumanPlayer and ComputerPlayerEasy 
+                or ComputerPlayerHard instances.
+            - Removes 3 cards from the deck.
         """
         for n in range(3):
             for player in self.players:
                 player.initial_cards.append(self.deck.pop())  
         
     def flop(self):
-        """Flips three cards from the deck to the river
+        """Flips three cards from the deck to the river.
         
         Side effects:
-            Takes a card from the deck and adds it to the river.
+            - Removes 3 cards from the deck.
+            - Adds 3 cards to the river
+            - Writes to stdout
         """
         self.river.append(self.deck.pop())
         self.river.append(self.deck.pop())
@@ -350,22 +353,34 @@ class HumanPlayer(Player):
         print("Your final hand after choosing initial cards:", self.pocket)   
             
     def bet(self):
-    
+        """Makes bet for HumanPlayer.
+        
+        Side effects:
+            - prints to stdout.
+            - can change GameState objects outcome.
+            - can change GameState objects fold_decision.
+            - removes bet amount from HumanPlayer's money.
+            - adds bet amount to GameState instances' total_pot.
+            - sets GameState's challange to the bet amount.
+        """
         print(f"Money left to bet: {self.money}")
         while True:
-            fold_decision = input("Do you want to fold? (Y/N): ").capitalize()
-            if fold_decision == "Y":
-                self.gamestate_obj.outcome="L"
-                self.gamestate_obj.fold=True
-                break
-            elif fold_decision == "N":
-                break
-            print("Please type in 'Y' or 'N'")
+            try:
+                fold_decision = input("Do you want to fold? (Y/N): ").capitalize()
+                if fold_decision == "Y":
+                    self.gamestate_obj.outcome="L"
+                    self.gamestate_obj.fold=True
+                    break
+                elif fold_decision == "N":
+                    break
+            except:
+                print("Please type in 'Y' or 'N'")
         while True:
-            bet = int(input("How much would you like to bet? (integers only)"))
-            if 0 <= bet <= self.money:
-                break
-            else:
+            try:
+                bet = int(input("How much would you like to bet? (integers only)"))
+                if 0 <= bet <= self.money:
+                    break
+            except:
                 print(f"Please bet a positive integer or 0 that is less than \
                     your money to bet, {self.money}.")
         self.money -= bet
@@ -546,10 +561,9 @@ def game():
     Runs game indefinately, integrates all classes and methods. 
     Args: none
     Side Effects: 
-        creates instances of gamestate, player, human player, and computer 
-        player (either easy or hard)
-        will print cards and instructions from methods in classes to sd out
-        will update attributes in created instances
+        - creates instances of GameState, HumanPlayer, and ComputerPlayerEasy or
+            ComputerPlayerHard. 
+        - writes to stdout.
     Returns: none
     """
     game=GameState()
