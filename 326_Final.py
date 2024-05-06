@@ -542,6 +542,16 @@ class ComputerPlayerHard(Player):
                                                                          
         
 def game():
+    """
+    Runs game indefinately, integrates all classes and methods. 
+    Args: none
+    Side Effects: 
+        creates instances of gamestate, player, human player, and computer 
+        player (either easy or hard)
+        will print cards and instructions from methods in classes to sd out
+        will update attributes in created instances
+    Returns: none
+    """
     game=GameState()
     game.begin_game()
     human=HumanPlayer(game)
