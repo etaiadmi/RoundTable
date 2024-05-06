@@ -90,14 +90,14 @@ class GameState:
             First you will be dealt 3 cards, and choose to select 2 of those. 
             Then there will be 2 flops of 3 cards each. Then you will choose
             a final hand of 7 cards from your pocket and the community cards.\n
-            Your hand of cards will be assigned a value. Build sets (run, 2 of 
-            a kind, 3 of a kind, full house) within your hand, and you 
+            Your hand of cards will be assigned a value. Build sets (runs and 
+            pairs/3 of a kind) within your hand, and you 
             will be awarded points equal to the face value of the cards in the 
             set times the length of the set. Any cards not in a set will be 
             worth face value, and points from sets and cards will be added to
             get the value for a hand. \n
-            You will play against a computuer bot. There are different levels of 
-            difficultues for bots: 1 being easiest and 5 being hardest
+            You will play against a computuer bot. The computer bot can either 
+            easy or hard.
             ====================================================================
             \n\n\n""")
         lev=input("""do you want to play easy or hard version: (must type 
