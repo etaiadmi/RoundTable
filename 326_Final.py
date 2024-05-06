@@ -134,22 +134,22 @@ class GameState:
         if outcome == "W":
             print(f"Congrats!! You won {pot / 2} dollars with your super poker")
 
-            self.money+=pot
+            self.players[0].money+=pot
         elif outcome=="L":
             print(f"You have been beat. Womp womp. You lost {pot / 2} dollars")
-            self.money -=pot
+            self.players[0].money -=pot
         elif outcome == "T":
             print("Wow, there was a tie. That's rare. You will break even")
-            self.money += (pot/2)
+            self.players[0].money += (pot/2)
     
     def play_again(self):
         play_again=input("Do you want to play again (y or n)").capitalize()
         if play_again=="Y":
             self.playing=True
-            print (f"You have {self.money} left. How much money would you like to add? "
+            print (f"You have {self.players[0].money} left. How much money would you like to add? "
                 "Write 0 if none.")
             new_money=int(input("Money to add: "))
-            self.money+=new_money
+            self.players[0].money+=new_money
             the_level =input("Do you want computer level easy or hard?")
             if the_level in ["easy", "hard"]:
                 self.level = the_level
