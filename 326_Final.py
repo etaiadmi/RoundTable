@@ -202,7 +202,30 @@ class GameState:
             self.outcome = outcome
 
 class Player: 
+    """
+    player class that contains game functions for both players and creates 
+    attributes for both player classes
+    Attributes:
+        money: int, money user inputted, total money available
+        initial_cards: str, cards dealt in first round
+        pocket: str, cards in player hand
+        final_hand: str, cards in players final hand of 7 cards
+        gamestate_obj: instance of gamestate obj to update betting and 
+        outcome attributes to gamestate
+    """
     def __init__(self, gamestate_obj):
+        """
+        initializer for player class
+        args:
+            gamestate_obj: instance of gamestate
+        side effects: sets attributes for:
+            money: int, from gamestate inputted user money
+            initial_cards: list, empty
+            pocket: list, empty
+            final_hand: list, empty
+            gamestate_obj: instance of gamestate object 
+        returns: none
+        """
         self.money=gamestate_obj.money # money for human
         self.initial_cards = []
         self.pocket = []
@@ -215,7 +238,7 @@ class Player:
         Args: 
             hand: list of 7 cards as a players's hand 
         Side effects: none
-        Returns: value of hand
+        Returns: int, value of hand
         """
         #face value 
         value=0
@@ -563,11 +586,11 @@ def parse_args(arglist):
     """ Parse command-line arguments.
     Args:
         arglist (list of str): arguments from the command line.
-    Arguments:
-        - name: player name
-        - phone number: player's phone number
+    Sets arguments of:
+        - name: str, player name
+        - phone number: str, player's phone number
     Returns:
-        namespace: the parsed arguments, as a namespace.
+        arglist: the parsed arguments, as a namespace.
     """
     parser = ArgumentParser()
     parser.add_argument("name", type=str,  help="name of player")
