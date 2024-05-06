@@ -88,10 +88,11 @@ class GameState:
         
         print("""\n\n\n
             -------------------Welcome to RoundTable Cards------------------\n 
-            You will build a hand of 7 cards, choosing to keep 2 of 3 cards 
-            initially dealt, then choosing 5 of the 6 cards in the river. \n
+            First you will be dealt 3 cards, and choose to select 2 of those. 
+            Then there will be 2 flops of 3 cards each. Then you will choose
+            a final hand of 7 cards from your pocket and the community cards.\n
             Your hand of cards will be assigned a value. Build sets (run, 2 of 
-            a kind, 3 of a kind, full house, flush) within your hand, and you 
+            a kind, 3 of a kind, full house) within your hand, and you 
             will be awarded points equal to the face value of the cards in the 
             set times the length of the set. Any cards not in a set will be 
             worth face value, and points from sets and cards will be added to
@@ -101,7 +102,7 @@ class GameState:
             ====================================================================
             \n\n\n""")
         lev=input("""do you want to play easy or hard version: (must type 
-                  'easy' or 'hard')""")
+            'easy' or 'hard')""")
         if lev in ["easy", "hard"]:
             self.level=lev
         else:
