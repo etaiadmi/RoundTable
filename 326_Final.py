@@ -577,6 +577,17 @@ def game():
         - creates instances of GameState, HumanPlayer, and ComputerPlayerEasy or
             ComputerPlayerHard. 
         - writes to stdout.
+        - see also GameState.begin_game()
+        - see also GameState.shuffle()
+        - see also GameState.deal()
+        - see also HumanPlayer.choose_initial_cards()
+        - see also ComputerPlayerEasy.choose_initial_cards()
+        - see also ComputerPlayerHard.choose_initial_cards()
+        - see also HumanPlayer.bet()
+        - see also Player.ranking()
+        - see also GameState.point_comparison()
+        - see also GameState.distribute_pot()
+        - see also GameState.play_again()
     Returns: none
     """
     game=GameState()
