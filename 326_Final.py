@@ -450,7 +450,6 @@ class ComputerPlayerEasy(Player):
         final_hand = self.gamestate_obj.river + self.pocket
         cpu_choice = []
         for card in range(8):
-            print(card)
             final_hand.pop(card)
             cpu_choice.append([self.ranking(final_hand), card])
             final_hand = self.gamestate_obj.river + self.pocket
