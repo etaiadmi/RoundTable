@@ -371,29 +371,36 @@ class HumanPlayer(Player):
     
     
     def choose_initial_cards(self): #this is HumanPlayer
-        """
-        Prompts the player to choose two cards to keep from their initially dealt three cards.
+       """
+       Prompts the player to choose two cards to keep from their initially dealt three cards.
 
-        This method displays the three initially dealt cards to the player and requests input to
-        select two of these cards to keep for their hand. The chosen cards are moved from the
-        `initial_cards` list to the `final_hand` list. This process continues until the player has
-        successfully chosen two cards. If the player attempts to choose a card not among their
-        initial cards, they are prompted to make a valid selection.
 
-        Side Effects:
-            - Modifies the `initial_cards` list by removing the chosen cards.
-            - Modifies the `final_hand` list by adding the chosen cards.
-            - Prints messages to stdout to show the cards available for selection, prompt the
-              player for their choice, and confirm the chosen cards.
+       This method displays the three initially dealt cards to the player and requests input to
+       select two of these cards to keep for their hand. The chosen cards are moved from the
+       `initial_cards` list to the `final_hand` list. This process continues until the player has
+       successfully chosen two cards. If the player attempts to choose a card not among their
+       initial cards, they are prompted to make a valid selection.
 
-        Returns:
-            None
-        """
-        print("Your initial cards are:", self.initial_cards)
-        while len(self.pocket) < 2:
-            choice = int(input("Choose a card to keep (enter the card number): "))
-            print("You have chosen:", self.pocket) if choice in self.initial_cards and not self.pocket.append(choice) and not self.initial_cards.remove(choice) else print("Invalid choice, please select from your initial cards.")
-        print("Your final hand after choosing initial cards:", self.pocket)
+
+       Side Effects:
+           - Modifies the `initial_cards` list by removing the chosen cards.
+           - Modifies the `final_hand` list by adding the chosen cards.
+           - Prints messages to stdout to show the cards available for
+           selection, prompt the player for their choice, and confirm
+           the chosen cards.
+
+
+       Returns:
+           None
+       """
+       print("Your initial cards are:", self.initial_cards)
+       while len(self.pocket) < 2:
+           try:
+               choice = int(input("Choose a card to keep (enter the card number): "))
+               print("You have chosen:", self.pocket) if choice in self.initial_cards and self.pocket.append(choice) is None and self.initial_cards.remove(choice) is None else print("Invalid choice, please select from your initial cards.")
+           except ValueError:
+               print("Invalid input. Please enter a valid integer representing a card number.")
+       print("Your final hand after choosing initial cards:", self.pocket)
  
             
     def bet(self):
@@ -610,6 +617,7 @@ def game():
         game.begin_game()
         human = HumanPlayer(game)
         game.players.append(human)
+        print("Initial game setup:", game) 
 
         while game.playing:
             if game.level == "easy":
@@ -620,7 +628,9 @@ def game():
                 game.players.append(comp)
 
             game.shuffle()
+            print("After shuffling the deck:", game)
             game.deal()
+            print("After dealing the cards:", game)
             human.choose_initial_cards()
             comp.cpu_choose_initial_cards()
             human.bet()
@@ -628,11 +638,13 @@ def game():
                 comp.cpu_bet(1)
                 if game.fold == False:
                     game.flop()
+                    print("After first flop:", game)
                     human.bet()
                     if game.fold == False:
                         comp.cpu_bet(2)
                         if game.fold == False:
                             game.flop()
+                            print("After second flop:", game)
                             human.bet()
                             if game.fold == False:
                                 comp.cpu_bet(3)
@@ -640,6 +652,7 @@ def game():
                                     human.choose_final_cards()
                                     comp.cpu_choose_final_cards()
                                     print(comp.final_hand)
+                                    print("Final hands decided:", game)
                                     hrank = human.ranking(human.final_hand)
                                     crank = comp.ranking(comp.final_hand)
                                     game.point_comparison(hrank, crank)
@@ -648,6 +661,7 @@ def game():
             crank = comp.ranking(comp.final_hand)
             game.write_info(game.outcome, hrank, crank, human, comp, "game_results.txt")
             game.play_again()
+            print("End of game round:", game)
         
 
 
