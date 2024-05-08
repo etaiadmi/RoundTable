@@ -417,6 +417,7 @@ class HumanPlayer(Player):
                 if fold_decision == "Y":
                     self.gamestate_obj.outcome="L"
                     self.gamestate_obj.fold=True
+                    self.gamestate_obj.playing=False
                     break
                 elif fold_decision == "N":
                     break
@@ -639,13 +640,11 @@ def game():
         --see also GameState.write_info()
         - see also GameState.play_again()
     """
-    while True:
-        game = GameState()
-        game.begin_game()
-        human = HumanPlayer(game)
-        game.players.append(human)
-
-        while game.playing:
+    game=GameState
+    game.begin_game()
+    human=HumanPlayer(game)
+    game.players.append(human)
+    while game.playing == True:
             if game.level == "easy":
                 comp = ComputerPlayerEasy(game)
                 game.players.append(comp)
