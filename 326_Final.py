@@ -191,20 +191,19 @@ class GameState:
         self.fold = False
     
     def point_comparison(self, player_points, computer_points):
-        """Comapres the point values of the player and computer and determines who
-        won.
+        """Comapres the point values of the player and computer and determines 
+        who won.
         
         Args:
             player_points (int): The points of the player's hand.
             computer_points (int): The points of the computer's hand.
-        
-        Returns:
-            tuple: 
-                A string message which describes the outcome 
-                of the game, which can either be a win, loss, or tie.
             
-                A string containing a single character which represents one of the
-                three outcomes for the game('W', 'L', 'T') 
+        Side effects:
+            prints information to stdout regarding point difference.
+            updates the outcome attribute to "W", "L", or "T" based on outcome.
+            
+        Returns:
+            None
         """
         outcome = ""
         if player_points > computer_points:
@@ -213,23 +212,38 @@ class GameState:
             self.outcome = outcome
         elif player_points < computer_points:
             outcome = "L"
-            print(
-                f"You lost. Your opponent had "
-                f"{computer_points - player_points} points more than you."
-                )
+            print(f"You lost. Your opponent had " \
+                  f"{computer_points - player_points} points more than you.")
             self.outcome = outcome
         else:
             outcome = "T"
-            print(f"It's a draw! The pot will be split evenly. Each player has \
-                {player_points} points")
+            print(f"It's a draw! The pot will be split evenly. Each player " \
+                  f"has {player_points} points")
             self.outcome = outcome
                         
     def write_info(self, outcome, hrank, crank, human, comp, filename):
+        """Writes end game information to a file.
+        
+        Args:
+            outcome (str): The outcome of the game.
+            hrank (int): The player's hand rank value.
+            crank (int): The computer's hand rank value.
+            human (HumanPlayer): HumanPlayer object which represents a human.
+            comp (ComputerPlayer): An easy or hard ComputerPlayerobject.
+            filename (str): The name of the text file.
+            
+        Side effects:
+            Writes a variety of end game information to a text file.
+            
+        Returns:
+            None
+        """
+        
         outcome_message = ""
         if outcome == "W":
             outcome_message = f"Congrats! You won ${self.total_pot / 2}."
         elif outcome == "L":
-            outcome_message = f"You lost ${self.total_pot / 2}. Better luck next time!"
+            outcome_message = f"You lost ${self.total_pot / 2}."
         elif outcome == "T":
             outcome_message = "It's a tie! You broke even."
 
@@ -428,12 +442,26 @@ class HumanPlayer(Player):
                 
     
     def choose_final_cards(self):
+        """Allows the user to pick their final hand comprised of 7 cards.
+        
+        Args:
+            None
+        
+        Side effects:
+            updates the final_card attribute to the list of cards the player 
+            picked.
+            prints final_hand information to stdout.
+        
+        Returns:
+            None
+        """
         all_cards = self.pocket + self.gamestate_obj.river
         print(f"Here are all the selectable cards: {all_cards}")
         final_hand = []
         while len(final_hand) < 7:
             try:
-                pick = int(input("Choose the final cards to add to your hand: "))
+                prompt = "Choose the final cards to add to your hand: "
+                pick = int(input(prompt))
                 if pick in all_cards:
                     final_hand.append(pick)
                     all_cards.remove(pick)
@@ -608,6 +636,7 @@ def game():
         - see also Player.ranking()
         - see also GameState.point_comparison()
         - see also GameState.distribute_pot()
+        --see also GameState.write_info()
         - see also GameState.play_again()
     """
     while True:
