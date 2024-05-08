@@ -640,7 +640,7 @@ def game():
         --see also GameState.write_info()
         - see also GameState.play_again()
     """
-    game=GameState
+    game=GameState()
     game.begin_game()
     human=HumanPlayer(game)
     game.players.append(human)
