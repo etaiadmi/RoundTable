@@ -1,1 +1,22 @@
 
+Money won/lost: Congrats! You won $0.0. 
+Your Points: 0 
+Your Final Hand: [] 
+Computer Points: 0 
+Computer Hands: [] 
+Point Difference: 0 
+
+Money won/lost: Congrats! You won $0.0. 
+Your Points: 0 
+Your Final Hand: [] 
+Computer Points: 0 
+Computer Hands: [] 
+Point Difference: 0 
+
+Money won/lost: You lost $100.0. 
+Your Points: 47 
+Your Final Hand: [12, 9, 6, 4, 3, 3, 7] 
+Computer Points: 50 
+Computer Hands: [6, 4, 3, 6, 3, 7, 6] 
+Point Difference: 3 
+

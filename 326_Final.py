@@ -550,7 +550,7 @@ class ComputerPlayerHard(Player):
                 self.money -= bet
                 self.gamestate_obj.challenge =0
                 print("Computer has called.") 
-            elif strength >35 and bet<= self.money: #call
+            elif strength >25 and bet>=0: #call
                 self.gamestate_obj.total_pot += bet
                 self.money -= bet
                 self.gamestate_obj.challenge =0
@@ -571,7 +571,7 @@ class ComputerPlayerHard(Player):
                 self.gamestate_obj.challenge =0
                 print("Computer has called.")
                 
-            elif strength > 29 and bet<= self.money: #call
+            elif strength >=30 and bet>=0: #call
                 self.gamestate_obj.total_pot += bet
                 self.money -= bet
                 self.gamestate_obj.challenge =0
@@ -592,7 +592,7 @@ class ComputerPlayerHard(Player):
                 self.gamestate_obj.challenge =0
                 print("Computer has called.")
                 
-            elif strength > 40 and bet>=0: #call
+            elif strength >= 40 and bet>=0: #call
                 self.gamestate_obj.total_pot += bet
                 self.money -= bet
                 self.gamestate_obj.challenge =0
