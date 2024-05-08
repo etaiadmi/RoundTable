@@ -417,7 +417,6 @@ class HumanPlayer(Player):
                 if fold_decision == "Y":
                     self.gamestate_obj.outcome="L"
                     self.gamestate_obj.fold=True
-                    self.gamestate_obj.play_again()
                     break
                 elif fold_decision == "N":
                     break
@@ -681,7 +680,7 @@ def game():
             crank = comp.ranking(comp.final_hand)
             game.write_info(game.outcome, hrank, crank, human, comp, "game_results.txt")
             game.play_again()
-        
+    print("Bye-Bye")   
 
 
 def parse_args(arglist):
