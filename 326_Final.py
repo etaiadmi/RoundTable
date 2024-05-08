@@ -28,7 +28,7 @@ class GameState:
         self.players = []
         self.river = []
         self.playing=True
-        self.total_pot = 0  # This needs to be initialized here
+        self.total_pot = 0  
         self.challenge = 0
         self.fold = False
         self.outcome = ""
@@ -147,17 +147,20 @@ class GameState:
         self.deck = [c[0] for c in post_shuffle]
 
     def distribute_pot(self,outcome, pot):
-        if outcome == "W":
-            print(f"Congrats!! You won {pot / 2} dollars with your super poker")
+        if self.fold == False:
+            if outcome == "W":
+                print(f"Congrats!! You won {pot / 2} dollars with your super poker")
 
-            self.players[0].money+=pot
-        elif outcome=="L":
+                self.players[0].money+=pot
+            elif outcome=="L":
+                print(f"You have been beat. Womp womp. You lost {pot / 2} dollars")
+                self.players[0].money -=pot/2
+            elif outcome == "T":
+                print("Wow, there was a tie. That's rare. You will break even")
+                self.players[0].money += (pot/2)
+        else:
             print(f"You have been beat. Womp womp. You lost {pot / 2} dollars")
-            self.players[0].money -=pot
-        elif outcome == "T":
-            print("Wow, there was a tie. That's rare. You will break even")
-            self.players[0].money += (pot/2)
-    
+            
     def play_again(self):
         play_again=input("Do you want to play again (y or n)").capitalize()
         if play_again=="Y":
@@ -209,14 +212,34 @@ class GameState:
             self.outcome = outcome
         elif player_points < computer_points:
             outcome = "L"
-            print(f"You lost. Your opponent had \
-                {computer_points - player_points} points more than you.")
+            print(
+                f"You lost. Your opponent had "
+                f"{computer_points - player_points} points more than you."
+                )
             self.outcome = outcome
         else:
             outcome = "T"
             print(f"It's a draw! The pot will be split evenly. Each player has \
                 {player_points} points")
             self.outcome = outcome
+                        
+    def write_info(self, outcome, hrank, crank, human, comp, filename):
+        outcome_message = ""
+        if outcome == "W":
+            outcome_message = f"Congrats! You won ${self.total_pot / 2}."
+        elif outcome == "L":
+            outcome_message = f"You lost ${self.total_pot / 2}. Better luck next time!"
+        elif outcome == "T":
+            outcome_message = "It's a tie! You broke even."
+
+        with open(filename, 'a', encoding = "utf-8") as file:
+            file.write(f"Money won/lost: {outcome_message} \n")
+            file.write(f"Your Points: {hrank} \n")
+            file.write(f"Your Final Hand: {human.final_hand} \n")
+            file.write(f"Computer Points: {crank} \n")
+            file.write(f"Computer Hands: {comp.final_hand} \n")
+            file.write(f"Point Difference: {abs(hrank-crank)} \n")
+            file.write("\n")
 
 class Player: 
     """
@@ -388,31 +411,40 @@ class HumanPlayer(Player):
                     break
             except:
                 print("Please type in 'Y' or 'N'")
-        while True:
-            try:
-                bet = int(input("How much would you like to bet? (integers only)"))
-                if 0 <= bet <= self.money:
-                    break
-            except:
-                print(f"Please bet a positive integer or 0 that is less than \
-                    your money to bet, {self.money}.")
-        self.money -= bet
-        self.gamestate_obj.total_pot += bet 
-        self.gamestate_obj.challenge = bet
-        
+        if fold_decision == "N":
+             while True:
+                try:
+                    bet = int(input("How much would you like to bet? (integers only)"))
+                    if 0 <= bet <= self.money:
+                        self.money -= bet
+                        self.gamestate_obj.total_pot += bet 
+                        self.gamestate_obj.challenge = bet
+                        break
+                except:
+                    print(f"Please bet a positive integer or 0 that is less than \
+                        your money to bet, {self.money}.")
+        else:
+            self.final_hand = [0,0,0,0,0,0,0]
+            self.gamestate_obj.outcome = "L"
+            self.gamestate_obj.fold=True
+            
+                
     
     def choose_final_cards(self):
         all_cards = self.pocket + self.gamestate_obj.river
         print(f"Here are all the selectable cards: {all_cards}")
         final_hand = []
         while len(final_hand) < 7:
-            pick = int(input("Choose the final cards to add to your hand: "))
-            if pick in all_cards:
-                final_hand.append(pick)
-                all_cards.remove(pick)
-                print(f"Your current hand is: {final_hand}")
-            else:
-                print("Please select from one of the available cards.")
+            try:
+                pick = int(input("Choose the final cards to add to your hand: "))
+                if pick in all_cards:
+                    final_hand.append(pick)
+                    all_cards.remove(pick)
+                    print(f"Your current hand is: {final_hand}")
+                else:
+                    print("Please select from one of the available cards.")
+            except ValueError:
+                print("Please enter numbers only.")
         print(f"Here is your final hand: {final_hand}")
         self.final_hand = final_hand
         
@@ -460,16 +492,15 @@ class ComputerPlayerEasy(Player):
 class ComputerPlayerHard(Player):
         
     def cpu_choose_initial_cards(self):
-        while len(self.final_hand) <2:
-            choice = min(self.initial_cards)
-            if choice in self.initial_cards:
-                self.final_hand.append(choice)
-                self.initial_cards.remove(choice)
-            else:
-                print("CPU_initial card error")
+        self.pocket = self.initial_cards
+        min_card = min(self.pocket)
+        self.pocket.remove(min_card)
 
-    def rd1_cpu_bet(self, round):
+
+
+    def cpu_bet(self, round):
         """ hard_cpu makes a bet
+        
         Args: None
             Side effects:
                 - Increases the total_pot amount.
@@ -480,81 +511,75 @@ class ComputerPlayerHard(Player):
                 total_pot(int) - updates the total amount of money in the pot 
 
         """
+        bluffer = randint(1, 100)
+        bet = self.gamestate_obj.challenge
         if round == 1:
-            self.hand.extend([randint(1, 13),randint(1, 13),randint(1, 13),
-                            randint(1, 13),randint(1, 13)])
-            strength = self.Player.ranking(self.hand)
-            self.hand = self.hand[:-5]
-            bluffer = randint(1, 100)
+            self.pocket.extend([randint(1, 13),randint(1, 13),randint
+                                       (1, 13),randint(1, 13),randint(1, 13)])
+            strength = self.ranking(self.pocket)
+            self.pocket= self.pocket[:-5]
+        
+
             if bluffer <= 30: 
-                super().total_pot += bet
+                self.gamestate_obj.total_pot += bet
                 self.money -= bet
-                return bet 
-            elif strength >35: #call
-                super().total_pot += bet
+                self.gamestate_obj.challenge =0
+                print("Computer has called.") 
+            elif strength >35 and bet<= self.money: #call
+                self.gamestate_obj.total_pot += bet
                 self.money -= bet
-                return bet 
+                self.gamestate_obj.challenge =0
             else:
-                super().fold=True
-                super().outcome = "W"
-        if round == 2:
-            pass
-        if round == 3:
-            pass
-    def rd2_cpu_bet(self,bet):
-        """ hard_cpu makes a bet
-        Args: None
-            Side effects:
-                - Increases the total_pot amount.
-                - Changes the amount of money of the computer player
-                - If folds then it will call the distribute_pot and give out 
-                earnings
-            Returns:
-                total_pot(int) - updates the total amount of money in the pot 
+                self.gamestate_obj.fold=True
+                self.gamestate_obj.outcome = "W"
+                self.gamestate_obj.challenge =0
+                HumanPlayer.final_hand = 0
+                ComputerPlayerHard.final_hand = [0,0,0,0,0,0,0]
+                print("Computer has folded. You win!")
+        elif round == 2:
+            self.pocket.extend([randint(1, 13),randint(1, 13)]+self.gamestate_obj.river)
+            strength = self.ranking(self.pocket)
+            self.pocket = self.pocket[:-5]
+            if bluffer <= 30: 
+                self.gamestate_obj.total_pot += bet
+                self.money -= bet
+                self.gamestate_obj.challenge =0
+                print("Computer has called.")
+                
+            elif strength > 29 and bet<= self.money: #call
+                self.gamestate_obj.total_pot += bet
+                self.money -= bet
+                self.gamestate_obj.challenge =0
+            else:
+                self.gamestate_obj.fold=True
+                self.gamestate_obj.outcome = "W"
+                self.gamestate_obj.challenge =0
+                HumanPlayer.final_hand = 0
+                ComputerPlayerHard.final_hand = [0,0,0,0,0,0,0]
+                print("Computer has folded. You win!")
+        elif round == 3:
+            ComputerPlayerHard.cpu_choose_final_cards
+            strength = self.ranking(self.final_hand)
+            bluffer = randint(1, 100)
+            if bluffer <= 50: 
+                self.gamestate_obj.total_pot += bet
+                self.money -= bet
+                self.gamestate_obj.challenge =0
+                print("Computer has called.")
+                
+            elif strength > 40 and bet>=0: #call
+                self.gamestate_obj.total_pot += bet
+                self.money -= bet
+                self.gamestate_obj.challenge =0
+                print("Computer has called.")
 
-        """
-        self.hand = self.hand+super().river
-        self.hand.extend([randint(1, 13),randint(1, 13)])
-        strength = self.Player.ranking(self.hand)
-        self.hand = self.hand[:-5]
-        bluffer = randint(1, 100)
-        if bluffer <= 30: 
-            super().total_pot += bet
-            self.money -= bet
-            return bet 
-        elif strength >40: #call
-            super().total_pot += bet
-            self.money -= bet
-            return bet 
-        else:
-            super().fold=True
-            super().outcome = "W"
-
-    def rd3_cpu_bet(self,bet,hand):
-        """ hard_cpu makes a bet
-        Args: None
-            Side effects:
-                - Increases the total_pot amount.
-                - Changes the amount of money of the computer player
-                - If folds then it will call the distribute_pot and give out 
-                earnings
-            Returns:
-                total_pot(int) - updates the total amount of money in the pot 
-
-        """
-        strength = ComputerPlayerHard.cpu_choose_final_cards(self.hand)
-        bluffer = randint(1, 100)
-        if bluffer <= 50: 
-            super().total_pot += bet
-            self.money -= bet
-            return bet 
-        elif strength >40: #call
-            super().total_pot += bet
-            self.money -= bet
-            return bet 
-        else:
-            super().fold=True
-            super().outcome = "W"
+            else:
+                self.gamestate_obj.fold=True
+                self.gamestate_obj.outcome = "W"
+                self.gamestate_obj.challenge =0
+                HumanPlayer.final_hand = 0
+                ComputerPlayerHard.final_hand = [0,0,0,0,0,0,0]
+                print("Computer has folded. You win!")
 
     def cpu_choose_final_cards(self):
         final_hand = self.gamestate_obj.river + self.pocket
@@ -570,62 +595,51 @@ class ComputerPlayerHard(Player):
         
 def game():
     """
-    Runs game indefinately, integrates all classes and methods. 
-    Args: none
-    Side Effects: 
-        - creates instances of GameState, HumanPlayer, and ComputerPlayerEasy or
-            ComputerPlayerHard. 
-        - writes to stdout.
-        - see also GameState.begin_game()
-        - see also GameState.shuffle()
-        - see also GameState.deal()
-        - see also HumanPlayer.choose_initial_cards()
-        - see also ComputerPlayerEasy.choose_initial_cards()
-        - see also ComputerPlayerHard.choose_initial_cards()
-        - see also HumanPlayer.bet()
-        - see also Player.ranking()
-        - see also GameState.point_comparison()
-        - see also GameState.distribute_pot()
-        - see also GameState.play_again()
-    Returns: none
+    Runs the game indefinitely, integrating all classes and methods. 
     """
-    game=GameState()
-    game.begin_game()
-    human=HumanPlayer(game)
-    game.players.append(human)
-    while game.playing ==True:
-        if game.level=="easy":
-            comp=ComputerPlayerEasy(game)
-            game.players.append(comp)
-        elif game.level== "hard":
-            comp=ComputerPlayerHard(game)
-            game.players.append(comp)
-        game.shuffle()
-        game.deal()
-        human.choose_initial_cards()
-        comp.cpu_choose_initial_cards()
-        human.bet()
-        if game.fold == False:
-            comp.cpu_bet(1)
+    while True:
+        game = GameState()
+        game.begin_game()
+        human = HumanPlayer(game)
+        game.players.append(human)
+
+        while game.playing:
+            if game.level == "easy":
+                comp = ComputerPlayerEasy(game)
+                game.players.append(comp)
+            elif game.level == "hard":
+                comp = ComputerPlayerHard(game)
+                game.players.append(comp)
+
+            game.shuffle()
+            game.deal()
+            human.choose_initial_cards()
+            comp.cpu_choose_initial_cards()
+            human.bet()
             if game.fold == False:
-                game.flop()
-                human.bet()
+                comp.cpu_bet(1)
                 if game.fold == False:
-                    comp.cpu_bet(2)
+                    game.flop()
+                    human.bet()
                     if game.fold == False:
-                        game.flop()
-                        human.bet()
+                        comp.cpu_bet(2)
                         if game.fold == False:
-                            comp.cpu_bet(3)
+                            game.flop()
+                            human.bet()
                             if game.fold == False:
-                                human.choose_final_cards()
-                                comp.cpu_choose_final_cards()
-                                print(comp.final_hand)
-                                hrank=human.ranking(human.final_hand)
-                                crank=comp.ranking(comp.final_hand)
-                                game.point_comparison(hrank,crank)
-        game.distribute_pot(game.outcome, game.total_pot)
-        game.play_again()
+                                comp.cpu_bet(3)
+                                if game.fold == False:
+                                    human.choose_final_cards()
+                                    comp.cpu_choose_final_cards()
+                                    print(comp.final_hand)
+                                    hrank = human.ranking(human.final_hand)
+                                    crank = comp.ranking(comp.final_hand)
+                                    game.point_comparison(hrank, crank)
+            game.distribute_pot(game.outcome, game.total_pot)
+            hrank = human.ranking(human.final_hand)
+            crank = comp.ranking(comp.final_hand)
+            game.write_info(game.outcome, hrank, crank, human, comp, "game_results.txt")
+            game.play_again()
         
 
 
