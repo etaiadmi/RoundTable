@@ -32,6 +32,29 @@ class GameState:
         self.challenge = 0
         self.fold = False
         self.outcome = ""
+        
+    def __str__(self):
+        """
+        Provides a string representation of the current game state.
+
+        This method returns a string that summarizes the game state, including 
+        the number of players, the number of cards remaining in the deck, the 
+        cards in the river, the total pot size, and the active status of the 
+        game. It is particularly useful for debugging or providing quick 
+        insights into the game's status during runtime.
+
+        Args:
+            None
+
+        Returns:
+            str: A string summarizing the current state of the game.
+        """
+        return (f"GameState: {len(self.players)} players, "
+                f"Deck has {len(self.deck)} cards remaining, "
+                f"River has {len(self.river)} cards: {self.river}, "
+                f"Total pot: ${self.total_pot}, "
+                f"Game {'is' if self.playing else 'is not'} active.")
+
     
     
     def deal(self):
