@@ -8,6 +8,18 @@ DECK = [1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,6,6,6,6,7,7,7,7,
             13,13,13,13]
 
 class GameState:
+    """A class to facilitate part of RoundTable Cards game.
+    
+    Attributes:
+        deck: list of int, deck of cards
+        players: list of HumanPlayer and ComputerPlayerEasy or 
+            ComputerPlayerHard, players of game
+        river: list of int, community cards
+        playing: bool, true while playing
+        total_pot: int, money in pot
+        fold: bool, false while not folding
+        outcome: str, empty, set when game has outcome
+    """
     def __init__(self):
         """Initializes a GameState object.
         
@@ -262,10 +274,10 @@ class Player:
     attributes for both player classes
     Attributes:
         money: int, money user inputted, total money available
-        initial_cards: str, cards dealt in first round
-        pocket: str, cards in player hand
-        final_hand: str, cards in players final hand of 7 cards
-        gamestate_obj: instance of gamestate obj to update betting and 
+        initial_cards: list of int, cards dealt in first round
+        pocket: list of int, cards in player hand
+        final_hand: list of int, cards in players final hand of 7 cards
+        gamestate_obj: instance of GameState to update betting and 
         outcome attributes to gamestate
     """
     def __init__(self, gamestate_obj):
@@ -371,7 +383,17 @@ class Player:
         return value
    
 class HumanPlayer(Player):
+    """A class that facilitates the human players interaction with the
+    RoundTable Cards game.
     
+    Attributes:
+        money: int, money user inputted, total money available
+        initial_cards: list of int, cards dealt in first round
+        pocket: list of int, cards in player hand
+        final_hand: list of int, cards in players final hand of 7 cards
+        gamestate_obj: instance of GameState to update betting and 
+        outcome attributes to gamestate
+    """
     
     def choose_initial_cards(self): #this is HumanPlayer
         """
