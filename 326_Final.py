@@ -142,9 +142,17 @@ class GameState:
         print ("""You also will bet at the end of each round (after cards are
         dealt then after each card in the river is revealed). How much money
         do you wish to bring to the table (bot will match you)""")
-        self.money=int(input("Dollar amount: "))
-        print(f"""Game is initializing against level {self.level} bot with a bet
-        of ${self.money}, best of luck!""")
+        while True:
+            try:
+                self.money=int(input("Dollar amount: "))
+                if self.money >= 0:
+                    print(f"Game is initializing against level {self.level} "
+                        f"bot with a bet of ${self.money}, best of luck!")
+                    break
+                else:
+                    print("Please input an integer that is 0 or greater.")
+            except:
+                print("Please input an integer that is 0 or greater.")
         
     def shuffle(self):
         """Shuffles the deck.
@@ -161,26 +169,34 @@ class GameState:
         self.deck = [c[0] for c in post_shuffle]
 
     def distribute_pot(self,outcome, pot):
-            if outcome == "W":
-                print(f"Congrats!! You won {pot / 2} dollars with your super poker")
-                self.players[0].money+=pot
-            elif outcome=="L":
-                if self.fold == False:
-                    print(f"You have been beat. Womp womp. You lost {pot / 2} dollars")
-                    self.players[0].money -=pot/2
-                else:
-                    print(f"You have been beat. Womp womp. You lost {pot / 2} dollars")
-            elif outcome == "T":
-                print("Wow, there was a tie. That's rare. You will break even")
-                self.players[0].money += (pot/2)
+        if outcome == "W":
+            print(f"Congrats!! You won {pot / 2} dollars with your super poker")
+            self.players[0].money+=pot
+        elif outcome=="L":
+            if self.fold == False:
+                print(f"You have been beat. Womp womp. You lost {pot / 2} dollars")
+                self.players[0].money -=pot/2
+            else:
+                print(f"You have been beat. Womp womp. You lost {pot / 2} dollars")
+        elif outcome == "T":
+            print("Wow, there was a tie. That's rare. You will break even")
+            self.players[0].money += (pot/2)
                 
     def play_again(self):
         play_again=input("Do you want to play again (y or n)").capitalize()
         if play_again=="Y":
             self.playing=True
-            print (f"You have {self.players[0].money} left. How much money would you like to add? "
-                "Write 0 if none.")
-            new_money=int(input("Money to add: "))
+            while True:
+                try:
+                    print (f"You have {self.players[0].money} left. How much money would you like to add? "
+                        "Write 0 if none.")
+                    new_money=int(input("Money to add: "))
+                    if new_money >= 0:
+                        break
+                    else:
+                        print("Please input an integer that is 0 or greater.")
+                except:
+                    print("Please insert an integer that is 0 or greater.")
             self.players[0].money+=new_money
             the_level =input("Do you want computer level easy or hard?")
             if the_level in ["easy", "hard"]:
