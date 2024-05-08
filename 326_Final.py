@@ -60,27 +60,6 @@ class GameState:
         str_river = [str(c) for c in self.river]
         print("Community Cards: " + " ".join(str_river))
 
-    def __str__(self):
-        """
-        Return a string representation of the current game state, listing 
-        each player and their cards.
-
-        Returns:
-            str: A formatted string where each line contains a player's name 
-            followed by a list of their cards. Each player's entry is separated 
-            by a newline. The format of each line is 
-            'PlayerName: Card1, Card2, ...'.
-
-        Side effects:
-            Reads the 'players' attribute of the instance to gather names and 
-            cards, but does not modify any data.
-        """
-        player_cards = []
-        for player in self.players:
-            cards_str = ', '.join(str(card) for card in player.cards)
-            player_cards.append(f'{player.name}: {cards_str}')
-        return '\n'.join(player_cards)
-
 
     def begin_game(self):
         """
@@ -357,13 +336,9 @@ class HumanPlayer(Player):
         print("Your initial cards are:", self.initial_cards)
         while len(self.pocket) < 2:
             choice = int(input("Choose a card to keep (enter the card number): "))
-            if choice in self.initial_cards:
-                self.pocket.append(choice)
-                self.initial_cards.remove(choice)
-                print("You have chosen:", self.pocket)
-            else:
-                print("Invalid choice, please select from your initial cards.")
-        print("Your final hand after choosing initial cards:", self.pocket)   
+            print("You have chosen:", self.pocket) if choice in self.initial_cards and not self.pocket.append(choice) and not self.initial_cards.remove(choice) else print("Invalid choice, please select from your initial cards.")
+        print("Your final hand after choosing initial cards:", self.pocket)
+ 
             
     def bet(self):
         """Makes bet for HumanPlayer.
