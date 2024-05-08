@@ -130,7 +130,17 @@ class GameState:
         print ("""You also will bet at the end of each round (after cards are
         dealt then after each card in the river is revealed). How much money
         do you wish to bring to the table (bot will match you)""")
-        self.money=int(input("Dollar amount: "))
+        try:
+            self.money=int(input("Dollar amount as an intiger: "))
+        except:
+            print("You did not enter a number. Enter a number!")
+            dols=input("Dollar amount: ")
+            if int(dols):
+                self.money=int(dols)
+            else:
+                print("""whoops you failed to provide a number. You will 
+                just bet 50 dollars today""")
+                self.money=50
         print(f"""Game is initializing against level {self.level} bot with a bet
         of ${self.money}, best of luck!""")
         
