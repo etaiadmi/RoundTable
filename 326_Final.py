@@ -2,11 +2,318 @@
 from random import randint
 from argparse import ArgumentParser
 import sys
-
+import pandas as pd
+import matplotlib.pyplot as plt
 DECK = [1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,6,6,6,6,7,7,7,7,
             8,8,8,8,9,9,9,9,10,10,10,10,11,11,11,11,12,12,12,12,
             13,13,13,13]
+class PandaData:
+    def __init__(self):
+        self.sim_player_hand = []
+        self.sim_cpu_hand= []
+        self.sim_result = []
+        self.sim_river = []
+        self.sim_cpu_final_hand = []
+        self.sim_player_final_hand = []
+        self.sim_deck = DECK
+        
+    def sim_ranking(self, hand):
+        """
+        Assigns value to hand
+        Args: 
+            hand: list of 7 cards as a players's hand 
+        Side effects: none
+        Returns:int, value of hand
+        """
+        #face value 
+        value=0
+        for card in hand:
+            value += int(card)
+        #pairs
+        card_counts={}
+        for card in hand:
+            if card in card_counts:
+                card_counts[card]+=1
+            else:
+                card_counts[card]=1
+        for key in card_counts:
+            if card_counts[key] > 1:
+                value += key * (card_counts[key]-1)
+            else:
+                pass
+        #run 
+        set=sorted(hand, key=lambda x: x+1, reverse=False)
+        for n in set:
+            if (n+1) in set:
+                if (n+2) in set:
+                    if (n+3) in set: 
+                        if (n+4) in set: 
+                            if (n+5) in set:
+                                if (n+6) in set: 
+                                    run = ((n) + (n+1) + (n+2) + (n+3) + (n+4)+
+                                    (n+5) + (n+6))
+                                    pts=run * 6
+                                    value += pts
+                                    set.remove(n)
+                                    set.remove(n+1)
+                                    set.remove(n+2)
+                                    set.remove(n+3)
+                                    set.remove(n+4)
+                                    set.remove(n+5)                                
+                                else: 
+                                    run = ((n) + (n+1) + (n+2) + (n+3) + (n+4)+
+                                    (n+5) )
+                                    pts=run * 5
+                                    value += pts
+                                    set.remove(n)
+                                    set.remove(n+1)
+                                    set.remove(n+2)
+                                    set.remove(n+3)
+                                    set.remove(n+4)
+                            else: 
+                                run = ((n) + (n+1) + (n+2) + (n+3) + (n+4))
+                                pts=run * 4
+                                value += pts
+                                set.remove(n)
+                                set.remove(n+1)
+                                set.remove(n+2)
+                                set.remove(n+3)
+                                set.remove(n+4)
+                        else:
+                            run = ((n) + (n+1) + (n+2) + (n+3))
+                            pts=run * 3
+                            value += pts
+                            set.remove(n)
+                            set.remove(n+1)
+                            set.remove(n+2)
+                            set.remove(n+3)
+                    else:
+                        run = ((n) + (n+1) + (n+2))
+                        pts = run*2
+                        value += pts
+                        set.remove(n)
+                        set.remove(n+1)
+                        set.remove(n+2)
+                else:
+                    pass
+            else: 
+                pass
+        return value
+        
+    def sim_flop(self):
+        self.sim_river.append(self.sim_deck.pop())
+        self.sim_river.append(self.sim_deck.pop())
+        self.sim_river.append(self.sim_deck.pop())
 
+    def sim_shuffle(self):
+        pre_shuffle = [list() for c in self.sim_deck]
+        for n in range(len(self.sim_deck)):
+            pre_shuffle[n].append(self.sim_deck[n])
+        for c in pre_shuffle:
+            c.append(randint(0, 10000))
+        post_shuffle = sorted(pre_shuffle, key=lambda x: x[1])
+        self.sim_deck = [c[0] for c in post_shuffle]
+    
+    def sim_deal(self):
+        
+        for n in range(3):
+            self.sim_player_hand.append(self.sim_deck.pop())  
+            self.sim_cpu_hand.append(self.sim_deck.pop())  
+        min_card = min(self.sim_player_hand)
+        min_cpu_card = min(self.sim_cpu_hand)
+        self.sim_player_hand.remove(min_card) 
+        self.sim_cpu_hand.remove(min_cpu_card)
+
+    def sim_rd_1(self):
+        self.sim_cpu_hand.extend([randint(1, 13),randint(1, 13),randint
+                                       (1, 13),randint(1, 13),randint(1, 13)])
+        strength = self.sim_ranking(self.sim_cpu_hand)
+        self.sim_cpu_hand= self.sim_cpu_hand[:-5]
+        bluffer = randint(1, 100)
+        if bluffer <= 30 or strength >35: 
+           self.sim_flop()
+
+        else:
+            self.sim_result.append("Fold Round 1")
+            
+        #round 2
+    def sim_rd_2(self):
+        self.sim_cpu_hand = self.sim_cpu_hand + self.sim_river
+        self.sim_cpu_hand.extend([randint(1, 13),randint(1, 13)])
+        strength = self.sim_ranking(self.sim_cpu_hand)
+        self.sim_cpu_hand= self.sim_cpu_hand[:-5]
+        bluffer = randint(1, 100)
+        if bluffer <= 30 or strength >=50: 
+           self.sim_flop()
+
+
+        else:
+            self.sim_result.append("Fold Round 2")
+        
+    def sim_rd_3(self):
+        bluffer = randint(1, 100)
+        self.sim_cpu_hand = self.sim_cpu_hand + self.sim_river
+        strength = self.sim_ranking(self.sim_cpu_hand)
+        self.sim_cpu_hand= self.sim_cpu_hand[:-5]
+        if bluffer <= 20 or strength >=65: 
+            pass
+        else:
+            self.sim_result.append("Fold Round 3")
+            
+        #sim_cpu choice to pick final hand
+    def sim_cpu_choose_final(self):
+        self.sim_cpu_final_hand = self.sim_cpu_hand +self.sim_river
+        cpu_choice = []
+        sim_cpu_final_hand = self.sim_cpu_final_hand
+        for card in range(8):
+            sim_cpu_final_hand.pop(card)
+            cpu_choice.append([self.sim_ranking(self.sim_cpu_final_hand), card])
+            sim_cpu_final_hand = self.sim_river + self.sim_cpu_hand
+        cpu_choice = sorted(cpu_choice, reverse=False)
+        sim_cpu_final_hand.pop(cpu_choice[0][1])
+        self.sim_cpu_final_hand = sim_cpu_final_hand
+    
+        #sim_player choice to pick final hand
+    def sim_player_choose_final(self):
+        self.sim_player_final_hand = self.sim_player_hand+self.sim_river
+        player_choice = []
+        sim_player_final_hand = self.sim_player_final_hand
+        for card in range(8):
+            sim_player_final_hand.pop(card)
+            player_choice.append([self.sim_ranking(self.sim_player_final_hand), card])
+            sim_player_final_hand = self.sim_river + self.sim_player_hand
+        player_choice = sorted(player_choice, reverse=False)
+        self.sim_player_final_hand.pop(player_choice[0][1])
+        self.sim_player_final_hand = sim_player_final_hand
+
+        
+        #final scores of both sims
+    def sim_showdown(self):
+        sim_cpu_final_score = self.sim_ranking(self.sim_cpu_final_hand)
+        sim_player_final_score =self.sim_ranking(self.sim_player_final_hand)
+        if sim_cpu_final_score>sim_player_final_score:
+            self.sim_result.append(f"CPU Won {sim_cpu_final_score}")
+        elif sim_cpu_final_score < sim_player_final_score:
+            self.sim_result.append(f"CPU Lost {sim_cpu_final_score}")
+        elif sim_cpu_final_score == sim_player_final_score:
+            self.sim_result.append(f"Tie")
+            
+        #reset
+    def reset(self):
+        self.sim_deck = DECK
+        self.sim_river = []
+        self.sim_player_hand = []
+        self.sim_cpu_hand= []
+        self.sim_result = []
+        self.sim_player_final_hand = []
+        self.sim_cpu_final_hand = []
+        
+    def simulation(self):
+        game_results = []
+        
+        for i in range(100):
+            while True:
+                self.sim_shuffle()
+                self.sim_deal()
+                self.sim_rd_1()
+                if "Fold Round 1" in self.sim_result:
+                    game_results.append(list(self.sim_result))
+                    break
+                self.sim_rd_2()
+                if "Fold Round 2" in self.sim_result:
+                    game_results.append(list(self.sim_result))
+                    break
+                self.sim_rd_3()
+                if "Fold Round 3" in self.sim_result:
+                    game_results.append(list(self.sim_result))
+                    break
+                else:
+                    self.sim_cpu_choose_final()
+                    self.sim_player_choose_final()
+                    self.sim_showdown()
+                    game_results.append(list(self.sim_result))
+                    break
+            self.reset()
+        print("anyting")
+        return game_results
+    
+    def panda_data_frames(self,game_results):
+        cpu_won = []
+        won_score = []
+        cpu_lost = []
+        lost_score = []
+        ties = []
+        fold_rd_1 = []
+        fold_rd_2 = []
+        fold_rd_3 = []
+        for result in game_results:
+            if "Tie" in result:
+                ties.append(result)
+            elif "Fold Round 1" in result:
+                fold_rd_1.append(result)
+            elif "Fold Round 2" in result:
+                fold_rd_2.append(result)
+            elif "Fold Round 3" in result:
+                fold_rd_3.append(result)
+        for result in game_results:
+            games_won =[string[0:7] for string in result]
+            games_lost =[string[0:8] for string in result]
+            if "CPU Won" in games_won:
+                cpu_won.append(games_won)
+                score =[string[8:] for string in result]
+                won_score.append(score)
+                
+            elif "CPU Lost" in games_lost:
+                cpu_lost.append(games_lost)
+                score =[string[9:] for string in result]
+                lost_score.append(score)
+        
+        other_score = []
+        other_outcome = []
+        other_outcome = ties +fold_rd_1 +fold_rd_2 +fold_rd_3
+        for result in other_outcome:
+            other_score.append("0")
+
+        total_score = won_score+lost_score+other_score
+        total_outcome = cpu_won +cpu_lost+other_outcome
+        
+        outcome_counts = {
+            "CPU Won": len(cpu_won),
+            "CPU Lost": len(cpu_lost),
+            "Tie": len(ties),
+            "Fold Round 1": len(fold_rd_1),
+            "Fold Round 2": len(fold_rd_2),
+            "Fold Round 3": len(fold_rd_3),
+        }
+        
+        total_score = won_score + lost_score + other_score
+        new_total_score = [int(inner_list[0]) for inner_list in total_score]
+        
+        total_outcome = cpu_won + cpu_lost + other_outcome
+
+        data = {
+            "Score": new_total_score,
+            "Outcome": [outcome[0] for outcome in total_outcome]
+        }
+        
+        df = pd.DataFrame(data)
+        
+        df_filtered = df[(df["Outcome"] == "CPU Won") & (df["Score"] > 100)]
+        
+        print("this is the amount of hands won by the Hard CPU"
+              "with scores above 100 points")
+        print(df_filtered)
+        
+        df = pd.DataFrame(list(outcome_counts.items()), columns=['Outcome',
+                                                                 'Frequency'])
+        
+        df.plot(kind='bar', x='Outcome', y='Frequency', legend=False, color='c',
+                alpha=0.7)
+        plt.title("Outcome Frequency")
+        plt.xlabel("Outcome")
+        plt.ylabel("Frequency")
+        plt.show()
+        
 class GameState:
     """A class to facilitate part of RoundTable Cards game.
     
@@ -104,8 +411,11 @@ class GameState:
         Side Effects: 
             sets attributes of 
                 level: int, difficulty of bot
+                stats: str, players prompt to view simulation 
                 money: int, money player has, bot will match
             prints messages explaining game to sd out
+            prints messages showing the results of the simulation between the ai
+            and prints a bar graph
         Returns: none
         """
         print(f"""
@@ -129,6 +439,16 @@ class GameState:
             easy or hard.
             ====================================================================
             \n\n\n""")
+        stats=input("""
+            would you like to see a simulation of the Hard CPU vs Easy CPU with
+            data analysis?: """)
+        if stats in ["yes"]:
+            simulation_instance = PandaData()
+            game_results = simulation_instance.simulation()  # Run the simulation
+            simulation_instance.panda_data_frames(game_results)
+        else:
+            print("""
+            Thats fine, less work for me """)
 
         lev=input("""
             do you want to play easy or hard version: (must type 
@@ -676,7 +996,9 @@ def game():
         - see also GameState.distribute_pot()
         --see also GameState.write_info()
         - see also GameState.play_again()
+        - see also PandaData.panda_data_frames
     """
+    
     game=GameState()
     game.begin_game()
     human=HumanPlayer(game)
