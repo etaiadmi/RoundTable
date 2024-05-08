@@ -417,7 +417,7 @@ class HumanPlayer(Player):
                 if fold_decision == "Y":
                     self.gamestate_obj.outcome="L"
                     self.gamestate_obj.fold=True
-                    self.gamestate_obj.playing=False
+                    self.gamestate_obj.play_again()
                     break
                 elif fold_decision == "N":
                     break
