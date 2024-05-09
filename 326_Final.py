@@ -8,7 +8,31 @@ DECK = [1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,6,6,6,6,7,7,7,7,
             8,8,8,8,9,9,9,9,10,10,10,10,11,11,11,11,12,12,12,12,
             13,13,13,13]
 class PandaData:
+    """A class for the simulation of rounds of RoundTable Cards game.
+
+    Attributes:
+        sim_player_hand (list of int):  simulated ai player hand
+        sim_cpu_hand (list of int):  simulated cpu hand
+        sim_result (list of int):  result of simulation
+        sim_river (list of int):  simulated community cards
+        sim_cpu_final_hand (list of int):  simulated cpu final hand
+        sim_player_final_hand (list of int):  simulated ai player final hand 
+        sim_deck (list of int): copy of global variable deck list
+        """
     def __init__(self):
+        """Initilizes a simulated game of roundtables between ai
+        Args: 
+        sim_player_hand (list of int): see class documentation.
+        sim_cpu_hand (list of int): see class documentation.
+        sim_result (list of int): see class documentation.
+        sim_river (list of int): see class documentation.
+        sim_cpu_final_hand (list of int):  see class documentation.
+        sim_player_final_hand (list of int):  see class documentation.
+        sim_deck (list of int):  see class documentation.
+            
+        Side effects:
+            initlizes all PandaData attributes
+        """
         self.sim_player_hand = []
         self.sim_cpu_hand= []
         self.sim_result = []
@@ -18,8 +42,7 @@ class PandaData:
         self.sim_deck = DECK
         
     def sim_ranking(self, hand):
-        """
-        Assigns value to hand
+        """Assigns value to hand.
         Args: 
             hand: list of 7 cards as a players's hand 
         Side effects: none
@@ -101,11 +124,22 @@ class PandaData:
         return value
         
     def sim_flop(self):
+        """Flips three cards from the simulated deck to the simulated river.
+        
+        Side effects:
+            - Removes 3 cards from the sim_deck.
+            - Adds 3 cards to the sim_river
+        """
         self.sim_river.append(self.sim_deck.pop())
         self.sim_river.append(self.sim_deck.pop())
         self.sim_river.append(self.sim_deck.pop())
 
     def sim_shuffle(self):
+        """Shuffles the sim_deck.
+        
+        Side effects:
+            - Puts the sim_deck in a random order.
+        """
         pre_shuffle = [list() for c in self.sim_deck]
         for n in range(len(self.sim_deck)):
             pre_shuffle[n].append(self.sim_deck[n])
@@ -115,6 +149,13 @@ class PandaData:
         self.sim_deck = [c[0] for c in post_shuffle]
     
     def sim_deal(self):
+        """Deals first three cards.
+        
+        Side effects:
+            - Distributes three cards each to sim_player_ai and sim_cpu 
+            instances
+            - Removes 3 cards from the sim_deck.
+        """
         
         for n in range(3):
             self.sim_player_hand.append(self.sim_deck.pop())  
@@ -125,6 +166,13 @@ class PandaData:
         self.sim_cpu_hand.remove(min_cpu_card)
 
     def sim_rd_1(self):
+        """ Hard CPU makes a choice on round 1.
+        Side effects: 
+            - strength is calculated with random integers
+            - may append sim_result list with a result
+            - may invoke sim_flop()
+            - strength is created and updated with an int
+        """
         self.sim_cpu_hand.extend([randint(1, 13),randint(1, 13),randint
                                        (1, 13),randint(1, 13),randint(1, 13)])
         strength = self.sim_ranking(self.sim_cpu_hand)
@@ -137,7 +185,14 @@ class PandaData:
             self.sim_result.append("Fold Round 1")
             
         #round 2
+    
     def sim_rd_2(self):
+        """Hard CPU makes a choice on round 2.
+        Side effects: 
+            strength is calculated with random integers
+            may append sim_result list with a result
+            may invoke sim_flop()
+        """
         self.sim_cpu_hand = self.sim_cpu_hand + self.sim_river
         self.sim_cpu_hand.extend([randint(1, 13),randint(1, 13)])
         strength = self.sim_ranking(self.sim_cpu_hand)
@@ -151,6 +206,13 @@ class PandaData:
             self.sim_result.append("Fold Round 2")
         
     def sim_rd_3(self):
+        """Hard CPU makes a choice on round 3.
+        Side effects: 
+            - strength is calculated with random integers
+            - may append sim_result list with a result
+            - may pass
+            - strength is created and updated with an int
+        """
         bluffer = randint(1, 100)
         self.sim_cpu_hand = self.sim_cpu_hand + self.sim_river
         strength = self.sim_ranking(self.sim_cpu_hand)
@@ -161,7 +223,16 @@ class PandaData:
             self.sim_result.append("Fold Round 3")
             
         #sim_cpu choice to pick final hand
+    
     def sim_cpu_choose_final(self):
+        """simulated cpu chooses final cards
+        
+        Side effects:
+            - sim_cpu_final_hand is updated
+            - cpu_choice is appended with a list of cards
+            - sim_cpu_final_hand is altered to a 7 digit list
+            - ranking is invoked to calculate best hand
+        """
         self.sim_cpu_final_hand = self.sim_cpu_hand +self.sim_river
         cpu_choice = []
         sim_cpu_final_hand = self.sim_cpu_final_hand
@@ -174,7 +245,17 @@ class PandaData:
         self.sim_cpu_final_hand = sim_cpu_final_hand
     
         #sim_player choice to pick final hand
+    
     def sim_player_choose_final(self):
+        """simulated player ai chooses final cards
+        
+        Side effects:
+            - sim_player_final_hand is updated
+            - player_choice is appended with a list of cards
+            - sim_player_final hand is altered to a 7 digit list
+            - ranking is invoked to calculate best hand
+
+        """
         self.sim_player_final_hand = self.sim_player_hand+self.sim_river
         player_choice = []
         sim_player_final_hand = self.sim_player_final_hand
@@ -188,7 +269,13 @@ class PandaData:
 
         
         #final scores of both sims
+    
     def sim_showdown(self):
+        """ the final hands of the player ai and cpu instance face off
+        Side effects:
+            - sim_result may be appened with one of three outcomes (W,L,T)
+            - sim_player and sim_cpu final scores are updated
+        """
         sim_cpu_final_score = self.sim_ranking(self.sim_cpu_final_hand)
         sim_player_final_score =self.sim_ranking(self.sim_player_final_hand)
         if sim_cpu_final_score>sim_player_final_score:
@@ -200,6 +287,10 @@ class PandaData:
             
         #reset
     def reset(self):
+        """resets the simulation results and all attributes in PandaData
+        Side effects
+            resets the simulation results and all attributes in PandaData
+        """
         self.sim_deck = DECK
         self.sim_river = []
         self.sim_player_hand = []
@@ -209,6 +300,15 @@ class PandaData:
         self.sim_cpu_final_hand = []
         
     def simulation(self):
+        """creates 100 simulations of RoundTable poker between Hard CPU and 
+        player ai
+        
+        Side effects:
+            all sim_result is appended to game_results
+            
+        Returns:
+            game_results (list of str): the game results of 100 simulations
+        """
         game_results = []
         
         for i in range(100):
@@ -238,6 +338,24 @@ class PandaData:
         return game_results
     
     def panda_data_frames(self,game_results):
+        """calculates game_results and showcases data on an pyplot and dataframe
+        Args:
+            game_results (list of str): the game results of 100 simulated games
+
+        Side effects:
+            - cpu_won,won_score,cpu_lost,lost_score,ties,fold_rd_1,fold_rd_2,
+            fold_rd_3,other_score, other_outcome are all created as empty lists
+            - the game_result is stripped and appended to the various lists 
+            metioned above.
+            - won_score, lost_score, other_scorelists are turned into a single 
+            list as str called total_score
+            - cpu_won, cpu_lost and other_outcome are appended to a single list 
+            called total outcome
+            - creates a pyplot based on the list of outcomes
+            - prints a dataframe that takes the scores above 100 points and 
+            ended in a win for the sim_cpu
+
+        """
         cpu_won = []
         won_score = []
         cpu_lost = []
@@ -333,13 +451,13 @@ class GameState:
         Args: none
         
         Side effects: sets attributes of 
-            deck: list, deck of cards
-            players: list, empty list of player
-            river: list, empty list of cards in river
-            playing: bool, true while playing
-            total_pot: int, money in pot currently 0
-            fold: bool, false while not folding
-            outcome: str, empty, set when game has outcome
+            - deck: list, deck of cards
+            - players: list, empty list of player
+            - river: list, empty list of cards in river
+            - playing: bool, true while playing
+            - total_pot: int, money in pot currently 0
+            - fold: bool, false while not folding
+            - outcome: str, empty, set when game has outcome
         
         Returns: none
         """
@@ -489,6 +607,17 @@ class GameState:
         self.deck = [c[0] for c in post_shuffle]
 
     def distribute_pot(self,outcome, pot):
+        """distributes pot to player instances 
+        Args:
+            outcome(str): outcome of round (W,L,T)
+            pot(int): total int of pot from human player and bot cpu
+        
+        Side effects:
+            - may set self.fold to false
+            - changes the money of either the cpu or human player based on the 
+            outcome
+            - print statements to console depending on outcome
+        """
         if outcome == "W":
             print(f"Congrats!! You won {pot / 2} dollars with your super poker")
             self.players[0].money+=pot
@@ -503,6 +632,15 @@ class GameState:
             self.players[0].money += (pot/2)
                 
     def play_again(self):
+        """Allows user to play again
+        Side effects:
+            - prompts user if they want to play again with user input
+            - may increase humanplayer self.money depending on input
+            - print to console various questions
+            - may end script if user chooses to 
+            - may reset all class attributes to initial values
+            - changes ComputerPlayer to Hard or Easy 
+        """
         play_again=input("Do you want to play again (y or n)").capitalize()
         if play_again=="Y":
             self.playing=True
@@ -581,7 +719,9 @@ class GameState:
             filename (str): The name of the text file.
             
         Side effects:
-            Writes a variety of end game information to a text file.
+            - Writes a variety of end game information to a text file.
+            - prevents cheating by writing computer hands as empty or 0 if they 
+            fold
             
         Returns:
             None
@@ -832,21 +972,34 @@ class HumanPlayer(Player):
         self.final_hand = final_hand
         
 class ComputerPlayerEasy(Player):
+    """Easy CPU opponent
+    Attributes: 
+        money: int, money user inputted, total money available
+        initial_cards: list of int, cards dealt in first round
+        pocket: list of int, cards in cpu hand
+        final_hand: list of int, cards in cpu final hand of 7 cards
+        gamestate_obj: instance of GameState to update betting and 
+        outcome attributes to gamestate
+    """
     def cpu_choose_initial_cards(self):
+        """computer chooses cards
+        Side effects:
+            - changes the value of self.pocket to self,intial cards(list of int)
+            - pops a random card from self.pocket
+        """
         self.pocket = self.initial_cards
         self.pocket.pop(randint(0,2))
 
     def cpu_bet(self, round):
-        """ easy_cpu makes a percentage bet based on the money it has
-        Args: rd1 - the 
-            Side effects:
-                - Increases the total_pot amount.
-                - Changes the amount of money of the computer player
-                - If folds then it will call the distribute_pot and give out 
-                earnings
-            Returns:
-                total_pot(int) - updates the total amount of money in the pot 
-
+        """ easy_cpu makes a choice
+        Args: 
+            round (int): the current round 
+        Side effects:
+            - may print fold or call 
+            - removes computers money based on bet from user
+            - may change self.gamestate_obj.change outcome to "W"
+            - may change self.gamestate_obj.fold. to True
+            - adds money to total_pot based on bet
         """
     
         bet = self.gamestate_obj.challenge
@@ -862,6 +1015,13 @@ class ComputerPlayerEasy(Player):
             print("Computer has folded. You win!")
 
     def cpu_choose_final_cards(self):
+        """cpu chooses their final hand
+        Side effects:
+            - changes final hand to a list of 7 cards (int)
+            - takes in all cards on river and in hand to choose best 7 cards
+            - activates ranking method 
+            - self.final_hand is appended list of 7 cards (int)
+        """
         final_hand = self.gamestate_obj.river + self.pocket
         cpu_choice = []
         for card in range(8):
@@ -873,8 +1033,23 @@ class ComputerPlayerEasy(Player):
         self.final_hand = final_hand
 
 class ComputerPlayerHard(Player):
+    """Hard CPU opponent
+    Attributes: 
+        money: int, money user inputted, total money available
+        initial_cards: list of int, cards dealt in first round
+        pocket: list of int, cards in cpu hand
+        final_hand: list of int, cards in cpu final hand of 7 cards
+        gamestate_obj: instance of GameState to update betting and 
+        outcome attributes to gamestate
+    """
         
     def cpu_choose_initial_cards(self):
+        """computer chooses cards
+        Side effects:
+            - changes the value of self.pocket to self,intial cards(list of int)
+            - min card is the lowest card in self.pocket
+            - pops a lowest card value from self.pocket
+        """
         self.pocket = self.initial_cards
         min_card = min(self.pocket)
         self.pocket.remove(min_card)
@@ -882,18 +1057,22 @@ class ComputerPlayerHard(Player):
 
 
     def cpu_bet(self, round):
-        """ hard_cpu makes a bet
-        
-        Args: None
-            Side effects:
-                - Increases the total_pot amount.
-                - Changes the amount of money of the computer player
-                - If folds then it will call the distribute_pot and give out 
-                earnings
-            Returns:
-                total_pot(int) - updates the total amount of money in the pot 
-
+        """ Hard cpu makes a choice
+        Args: 
+            round (int): the current round 
+        Side effects:
+            - may print fold or call 
+            - removes computers money based on bet from user
+            - may change self.gamestate_obj.change outcome to "W"
+            - may change self.gamestate_obj.fold. to True
+            - adds money to total_pot based on bet
+            - changes the level of strength from creating random integer
+            values that predict the flop 
+            - alters self.pocket and reverts changes after strength calculations
+            - computer may bluff if bluffer is within range of random int
+            
         """
+    
         bluffer = randint(1, 100)
         bet = self.gamestate_obj.challenge
         if round == 1:
@@ -929,7 +1108,7 @@ class ComputerPlayerHard(Player):
                 self.gamestate_obj.challenge =0
                 print("Computer has called.")
                 
-            elif strength >=30 and bet>=0: #call
+            elif strength >=45 and bet>=0: #call
                 self.gamestate_obj.total_pot += bet
                 self.money -= bet
                 self.gamestate_obj.challenge =0
@@ -950,7 +1129,7 @@ class ComputerPlayerHard(Player):
                 self.gamestate_obj.challenge =0
                 print("Computer has called.")
                 
-            elif strength >= 40 and bet>=0: #call
+            elif strength >= 65 and bet>=0: #call
                 self.gamestate_obj.total_pot += bet
                 self.money -= bet
                 self.gamestate_obj.challenge =0
@@ -965,6 +1144,13 @@ class ComputerPlayerHard(Player):
                 print("Computer has folded. You win!")
 
     def cpu_choose_final_cards(self):
+        """cpu chooses their final hand
+        Side effects:
+            - changes final hand to a list of 7 cards (int)
+            - takes in all cards on river and in hand to choose best 7 cards
+            - activates ranking method 
+            - self.final_hand is appended list of 7 cards (int)
+        """
         final_hand = self.gamestate_obj.river + self.pocket
         cpu_choice = []
         for card in range(8):
@@ -981,7 +1167,7 @@ def game():
     Runs the game indefinitely, integrating all classes and methods. 
     
     Side effects:
-        - creates instances of GameState, HumanPlayer, and ComputerPlayerEasy or
+        - creates instances of PandaData, GameState, HumanPlayer, and ComputerPlayerEasy or
             ComputerPlayerHard. 
         - writes to stdout.
         - see also GameState.begin_game()
@@ -996,7 +1182,7 @@ def game():
         - see also GameState.distribute_pot()
         --see also GameState.write_info()
         - see also GameState.play_again()
-        - see also PandaData.panda_data_frames
+        - see also PandaData.panda_data_frames()
     """
     
     game=GameState()
@@ -1036,8 +1222,8 @@ def game():
                                     crank = comp.ranking(comp.final_hand)
                                     game.point_comparison(hrank, crank)
             game.distribute_pot(game.outcome, game.total_pot)
-            hrank = human.ranking(human.final_hand)
-            crank = comp.ranking(comp.final_hand)
+            hrank = human.ranking(human.final_hand)#update hrank for write info
+            crank = comp.ranking(comp.final_hand)#update hrank for write info
             game.write_info(game.outcome, hrank, crank, human, comp, "game_results.txt")
             game.play_again()
     print("Bye-Bye")   
