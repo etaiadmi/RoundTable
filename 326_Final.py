@@ -863,6 +863,7 @@ class HumanPlayer(Player):
     RoundTable Cards game.
     
     Attributes:
+        Inherits from Player class.
         money: int, money user inputted, total money available
         initial_cards: list of int, cards dealt in first round
         pocket: list of int, cards in player hand
@@ -974,6 +975,7 @@ class HumanPlayer(Player):
 class ComputerPlayerEasy(Player):
     """Easy CPU opponent
     Attributes: 
+        Inherits from Player class.
         money: int, money user inputted, total money available
         initial_cards: list of int, cards dealt in first round
         pocket: list of int, cards in cpu hand
